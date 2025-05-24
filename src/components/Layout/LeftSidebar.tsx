@@ -122,15 +122,7 @@ const LeftSidebar = ({
             {header}
           </Header>
         ) : null}
-        <Content
-          style={{
-            margin: "24px",
-            minHeight: 280,
-            background: "#F6F6F6",
-          }}
-        >
-          {content}
-        </Content>
+        <Content>{content}</Content>
       </Layout>
     </Layout>
   );
