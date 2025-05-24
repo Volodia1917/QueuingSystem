@@ -24,7 +24,7 @@ const LeftSidebar = ({
   header,
   content,
 }: {
-  header: React.ReactNode;
+  header?: React.ReactNode;
   content: React.ReactNode;
 }) => {
   const [selectedKey, setSelectedKey] = useState<string>("1");
@@ -117,9 +117,11 @@ const LeftSidebar = ({
         </div>
       </Sider>
       <Layout>
-        <Header style={{ padding: "0 24px", background: "#F6F6F6" }}>
-          {header}
-        </Header>
+        {header ? (
+          <Header style={{ padding: "0 24px", background: "#F6F6F6" }}>
+            {header}
+          </Header>
+        ) : null}
         <Content
           style={{
             margin: "24px",
