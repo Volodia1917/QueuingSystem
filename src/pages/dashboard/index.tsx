@@ -40,7 +40,7 @@ const DashboardContent = () => {
     >
       <Row gutter={[16, 16]} style={{ margin: 0, width: "100%" }} wrap={false}>
         {/* Left Content */}
-        <Col xs={24} sm={24} md={24} lg={18} xl={18} style={{ padding: "16px" }}>
+        <Col xs={24} sm={24} md={24} lg={16} xl={16} style={{ padding: "16px" }}>
           {/* Header */}
           <div
             style={{
@@ -104,12 +104,13 @@ const DashboardContent = () => {
             xs={0}
             sm={0}
             md={0}
-            lg={6}
-            xl={6}
+            lg={8}
+            xl={8}
             style={{
               width: "100%",
               height: "100vh",
               overflow: "hidden",
+              padding: 0,
             }}
           >
             <OverviewRightSidebar />
@@ -123,7 +124,7 @@ const DashboardContent = () => {
         placement="right"
         onClose={onClose}
         open={visible}
-        width={640}
+        width={700}
       >
         <OverviewRightSidebar />
       </Drawer>
