@@ -1,5 +1,5 @@
 import { Button, Flex, Typography, Avatar } from "antd";
-import { Icons } from "./Icons";
+import { Icons } from "../Icons/Icons";
 import OverviewCalendar from "./Calendar";
 import { UserOutlined } from "@ant-design/icons";
 import React from "react";
