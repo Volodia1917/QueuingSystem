@@ -1,6 +1,6 @@
 import { Avatar, Button, Flex } from "antd";
 import React from "react";
-import { Icons } from "../DashboardContent/Icons";
+import { Icons } from '../Icons/Icons';
 import { UserOutlined } from "@ant-design/icons";
 import { Typography } from "antd";
 
