@@ -1,0 +1,54 @@
+/* Custom styles for the left sidebar */
+.custom-sidebar-menu.ant-menu {
+  font-size: 16px;
+}
+
+.custom-sidebar-menu.ant-menu .ant-menu-item-selected {
+  background-color: #ff7506 !important;
+  color: #fff;
+}
+
+.custom-sidebar-menu.ant-menu .ant-menu-item-selected:hover {
+  background-color: #ff7506 !important;
+  color: #fff;
+}
+
+
+.custom-sidebar-menu.ant-menu .ant-menu-item-active {
+  color: #ff7506;
+}
+
+.custom-sidebar-menu.ant-menu
+  .ant-menu-submenu-selected
+  .ant-menu-submenu-title {
+  color: #ff7506;
+}
+
+.custom-sidebar-menu.ant-menu .ant-menu-submenu-open {
+  color: #ff7506;
+}
+
+.custom-sidebar-menu.ant-menu .ant-menu-sub {
+  background-color: #fff;
+}
+
+.custom-sidebar-menu.ant-menu .ant-menu-sub .ant-menu-item {
+  padding-left: 48px !important;
+  height: 48px;
+  line-height: 48px;
+}
+
+.custom-sidebar-menu.ant-menu .ant-menu-sub .ant-menu-item-selected {
+  background-color: #fff2e7 !important;
+  color: #ff7506 !important;
+}
+
+
+.custom-sidebar-menu.ant-menu .ant-menu-item-selected svg path {
+  stroke: #fff;
+}
+
+.custom-sidebar-menu.ant-menu-inline .ant-menu-sub .ant-menu-item-active {
+  color: #ff7506;
+  background-color: #fff2e7;
+}
