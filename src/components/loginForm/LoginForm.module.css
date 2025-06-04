@@ -1,0 +1,136 @@
+.container {
+    display: flex;
+    background-color: #F6F6F6;
+}
+
+.left,
+.right {
+    height: 100vh;
+}
+
+.left {
+    width: 41%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.left .wrapper {
+    margin-top: 10%;
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.login_form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 75px;
+}
+
+.login_form_item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.login_form_item label {
+    display: block;
+    color: #37474F;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 27px;
+    padding: 5px 10px 5px 0;
+}
+
+.login_form_item input {
+    display: block;
+    color: #37474F;
+    font-size: 18px;
+    background-color: #FFFFFF;
+    line-height: 44px;
+    border-radius: 8px;
+    border: 1.5px solid #ccc;
+    padding: 0 10px;
+}
+
+.input_error {
+    border-color: #E73F3F !important;
+}
+
+.error_message {
+    display: flex;
+    align-items: center;
+    color: #E73F3F;
+}
+
+.error_message-icon{
+    margin-right: 5px;
+}
+
+.forgot_password-link {
+    cursor: pointer;
+    width: fit-content;
+    padding: 5px 10px;
+    text-decoration: none;
+    color: #E73F3F;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.right {
+    display: flex;
+    width: 59%;
+    background-color: #ffffff;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.submit_button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.submit_button button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 24px;
+    background-color: #FF9138;
+    width: 162px;
+    height: 40px;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    box-shadow: 0 0 6px 0 #E7E9F2;
+}
+
+.welcome {
+    width: 71%;
+}
+
+.welcome img{
+    width: 90%;
+    aspect-ratio: 1/1;
+}
+
+.welcome_text {
+    position: absolute;
+    z-index: 5;
+    transform: translateX(55%);
+}
+
+.welcome_text p {
+    font-size: 34px;
+    color: #FF7506;
+    line-height: 25px;
+}

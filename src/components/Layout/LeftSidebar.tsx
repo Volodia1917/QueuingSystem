@@ -111,6 +111,10 @@ const LeftSidebar = ({
               display: "flex",
               alignItems: "center",
             }}
+            onClick={()=>{
+              localStorage.clear();
+              window.location.reload();
+            }}
           >
             <span style={{ marginLeft: 8 }}>Đăng xuất</span>
           </Button>
