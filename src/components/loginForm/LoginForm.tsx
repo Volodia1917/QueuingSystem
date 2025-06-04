@@ -46,6 +46,8 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
     if(!dataLogin.message){
       localStorage.setItem('isLogined', 'true');
       localStorage.setItem('username', username);
+      localStorage.setItem('userFullName', dataLogin.userFullName);
+      localStorage.setItem('avatar', dataLogin.avatar)
       localStorage.setItem('token', dataLogin.token);
       localStorage.setItem('tokenRefresh', dataLogin.tokenRefresh);
       props.onSubmit();

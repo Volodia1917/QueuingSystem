@@ -41,7 +41,7 @@ export const UserPart = () => {
           >
             <Avatar
               size={40}
-              src="/images/user.jpg"
+              src={localStorage.getItem('avatar')}
               icon={<UserOutlined />}
               alt="Avatar User"
               style={{
@@ -54,7 +54,7 @@ export const UserPart = () => {
           <div>
             <Text style={{ fontSize: "12px", color: "#7E7E7E" }}>Xin chào</Text>
             <Text strong style={{ display: "block", fontSize: "14px" }}>
-              Lê Quỳnh Ái Vân
+              {localStorage.getItem('userFullName')}
             </Text>
           </div>
         </Flex>
