@@ -1,0 +1,39 @@
+/* Custom table styling */
+.custom-table .ant-table {
+  border-radius: 0 !important;
+  border: none !important;
+}
+
+.custom-table .ant-table-container {
+  border-radius: 0 !important;
+}
+
+.custom-table .ant-table-thead > tr > th {
+  background: #ff9138 !important;
+  color: white !important;
+  font-weight: 600 !important;
+  text-align: center !important;
+  border-bottom: none !important;
+  padding: 16px 12px !important;
+  font-size: 16px !important;
+}
+
+.custom-table .ant-table-tbody > tr:nth-child(even) {
+  background: #fff2e7 !important;
+}
+
+.custom-table .ant-table-tbody > tr:nth-child(odd) {
+  background: white !important;
+}
+
+.custom-table .ant-table-tbody > tr > td {
+  text-align: start !important;
+  padding: 16px 12px !important;
+  border-bottom: 1px solid #f0f0f0 !important;
+  font-size: 14px !important;
+  color: #535261 !important;
+}
+
+.custom-table .ant-table-tbody > tr:hover > td {
+  background: #f8f9fa !important;
+}

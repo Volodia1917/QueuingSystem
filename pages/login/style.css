@@ -1,0 +1,46 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    background-color: #F6f6f6;
+}
+.left {
+    display: flex;
+    width: 41%;
+    height: 100vh;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.right {
+    display: flex;
+    width: 59%;
+    height: 100vh;
+    background-color: #ffffff;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+.formItem {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 10px;
+}
+.welcome {
+    width: 72%;
+    aspect-ratio: 1/1;
+}
+.text {
+    text-align:start;
+    position: absolute;
+    z-index: 5;
+    transform: translateX(65%);
+  }
+  p {
+    font-size: 22px;
+    color: #FF7506;
+  }
+  .highlight {
+    color: #fa8c16;
+    font-weight: 800;
+  }
