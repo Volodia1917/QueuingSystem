@@ -20,12 +20,10 @@ function getItem(
 }
 
 const { Header, Sider, Content } = Layout;
-const LeftSidebar = ({
-  header,
-  content,
-}: {
-  header?: React.ReactNode;
-  content: React.ReactNode;
+const LeftSidebar = (props:{
+  header?:React.ReactNode,
+  content:React.ReactNode,
+  sendSelectedIndex: (index:string) => void
 }) => {
   const [selectedKey, setSelectedKey] = useState<string>("1");
   const [openKeys, setOpenKeys] = useState<string[]>([]);
@@ -58,10 +56,11 @@ const LeftSidebar = ({
 
   const onSelect: MenuProps["onSelect"] = ({ key }) => {
     setSelectedKey(key);
+    props.sendSelectedIndex(key);
   };
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
+    <Layout style={{height: "100vh"}}>
       <Sider
         trigger={null}
         collapsible
@@ -121,12 +120,12 @@ const LeftSidebar = ({
         </div>
       </Sider>
       <Layout>
-        {header ? (
+        {props.header ? (
           <Header style={{ padding: "0 24px", background: "#F6F6F6" }}>
-            {header}
+            {props.header}
           </Header>
         ) : null}
-        <Content>{content}</Content>
+        <Content>{props.content}</Content>
       </Layout>
     </Layout>
   );

@@ -25,7 +25,7 @@ export const MainContentLayout: React.FC<MainContentLayoutProps> = ({
     <div
       style={{
         background: "#f6f6f6",
-        minHeight: "100vh",
+        height: "800px",
         width: "100%",
         padding: "24px",
         boxSizing: "border-box",

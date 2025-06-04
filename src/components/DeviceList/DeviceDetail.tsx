@@ -38,7 +38,7 @@ export const DeviceDetail: React.FC<DeviceDetailProps> = ({
   };
 
   return (
-    <MainContentLayout 
+    <MainContentLayout
       title="Quản lý thiết bị"
       floatButtonItems={[
         {

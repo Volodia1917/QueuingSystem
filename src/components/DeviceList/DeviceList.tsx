@@ -353,7 +353,7 @@ export const DeviceList: React.FC<DeviceListProps> = ({
           overflow: "hidden",
         }}
       >
-        <TableCustom
+        <TableCustom style={{height:'500px', overflow:'auto'}}
           columns={deviceColumns}
           data={deviceData}
           pagination={{
