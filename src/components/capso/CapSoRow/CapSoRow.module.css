@@ -1,0 +1,50 @@
+.table :global(.ant-table-thead > tr > th) {
+  background-color: #ff9138 !important; /* Cam đậm */
+  color: white;
+  font-weight: 600;
+  text-align: center;
+}
+
+.cell {
+  font-size: 14px;
+  padding: 12px;
+  border: 1px solid #ffe3cd;
+}
+
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.link {
+  color: #4277ff;
+  font-weight: 500;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.evenRow {
+  background-color: #ffffff;
+}
+
+.oddRow {
+  background-color: #fff2e7;
+}
+
+/* Bo tròn 4 góc ngoài cùng bảng */
+:global(.ant-table-wrapper) {
+  border-radius: 12px;
+  overflow: hidden; /* Bắt buộc để bo tròn có hiệu lực */
+}
+
+

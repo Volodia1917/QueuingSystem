@@ -1,0 +1,37 @@
+.floatingContainer {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  background-color: #fff2e7;
+  border-radius: 16px;
+  padding: 12px 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  cursor: pointer;
+  z-index: 1000;
+  width: 80px;
+}
+
+.iconWrapper {
+  background-color: #ff9138;
+  border-radius: 12px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+}
+
+.plusIcon {
+  color: white;
+  font-size: 18px;
+}
+
+.text {
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #ff9138;
+  line-height: 1.2;
+}

@@ -1,0 +1,55 @@
+.overlay {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(82, 82, 91, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999 !important;
+}
+
+.popup {
+  background-color: #fff;
+  border-radius: 16px;
+  text-align: center;
+  padding: 32px;
+  width: 420px;
+  position: relative;
+}
+
+.close {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 16px;
+  color: #ff7506;
+  cursor: pointer;
+}
+
+.popup h3 {
+  font-size: 20px;
+  margin-bottom: 12px;
+  color: #535261;
+}
+
+.popup h1 {
+  color: #ff7506;
+  font-size: 48px;
+  margin: 0;
+}
+
+.popup p {
+  margin: 8px 0;
+  font-size: 16px;
+}
+
+.info {
+  background-color: #ff7506;
+  color: white;
+  margin-top: 20px;
+  padding: 16px;
+  border-radius: 0 0 16px 16px;
+}
