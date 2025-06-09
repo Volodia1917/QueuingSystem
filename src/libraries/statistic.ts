@@ -1,7 +1,7 @@
-import { BACKEND_URL, getToken } from "./useApi";
+import { API_URL, getToken } from "./useApi";
 
 export const getStatisticNumbersOverview = async () => {
-  const data = await fetch(`${BACKEND_URL}/Statistic/numbers-overview`, {
+  const data = await fetch(`${API_URL}/Statistic/numbers-overview`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -12,7 +12,7 @@ export const getStatisticNumbersOverview = async () => {
 };
 
 export const getStatisticOverallSummary = async () => {
-  const data = await fetch(`${BACKEND_URL}/Statistic/overall-summary`, {
+  const data = await fetch(`${API_URL}/Statistic/overall-summary`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -28,7 +28,7 @@ export const getStatisticChartData = async (
   endDate?: string
 ) => {
   const data = await fetch(
-    `${BACKEND_URL}/Statistic/chart-data?period=${period}${
+    `${API_URL}/Statistic/chart-data?period=${period}${
       startDate ? `&startDate=${startDate}` : ""
     }${endDate ? `&endDate=${endDate}` : ""}`,
     {
