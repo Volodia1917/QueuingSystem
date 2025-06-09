@@ -1,0 +1,18 @@
+.welcome_wrapper {
+    width: 71%;
+    position: relative;
+}
+
+.welcome_title{
+    position: absolute;
+    right: -100px;
+    top: 40%;
+}
+
+.welcome_title_item{
+    margin: 0 !important;
+    font-weight: 400;
+    line-height: 54px;
+}
+
+

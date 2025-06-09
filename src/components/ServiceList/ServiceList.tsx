@@ -213,6 +213,7 @@ export const ServiceList: React.FC<ServiceListProps> = ({
         >
           <Title level={5}>Từ khóa</Title>
           <Search
+            className="search_input"
             placeholder="Nhập từ khóa"
             enterButton={
               <div

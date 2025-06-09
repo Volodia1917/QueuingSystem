@@ -1,0 +1,28 @@
+.container{
+    height: 100vh;
+    width: 100vw;
+    background-color: #F6F6F6;
+}
+
+.left, .right {
+    display: flex;
+    justify-content: center;
+}
+
+.left_wrapper{
+    width: 70%;
+    margin-top: 10%;
+}
+
+.right{
+    background-color: #fff;
+    align-items: center;
+}
+
+.welcome {
+    width: 71%;
+    aspect-ratio: 1/1;
+}
+
+
+

@@ -24,7 +24,7 @@
   color: white !important;
 }
 
-.ant-input {
+.ant-input.search_input {
   border-radius: 8px !important;
   border: 1.5px solid #d4cbcb !important;
   height: 48px !important;

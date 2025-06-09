@@ -1,0 +1,39 @@
+.form_wrapper {
+    width: 100%;
+}
+
+.form_title {
+    text-align: center;
+}
+
+.form_item {
+    margin: 0 0 16px 0;
+    font-weight: 400;
+}
+
+.form_input {
+    padding: 8px 12px;
+    line-height: 27px;
+    max-height: 44px;
+}
+
+.form_warning {
+    font-weight: 400;
+    background-color: transparent !important;
+    border: none !important;
+    padding: 0;
+}
+
+.form_btn {
+    padding: 10px 24px;
+    width: 170px !important;
+    height: 40px;
+    font-weight: 700;
+}
+
+.form_link {
+    font-size: 14px;
+    font-weight: 400;
+    padding: 0;
+    text-decoration: none;
+}
