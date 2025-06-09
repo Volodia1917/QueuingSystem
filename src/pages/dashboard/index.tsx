@@ -4,6 +4,7 @@ import DashboardCards from "../../components/DashboardContent/DashboardCards";
 import { AnalysisChart } from "../../components/DashboardContent/AnalysisChart";
 import { OverviewRightSidebar } from "../../components/DashboardContent/OverviewRightSidebar";
 import { MenuUnfoldOutlined } from "@ant-design/icons";
+import { CustomBreadcrumb } from "../../components/Layout/CustomBreadcrumb";
 
 const { Title } = Typography;
 const { useBreakpoint } = Grid;
@@ -51,9 +52,11 @@ const DashboardContent = () => {
             }}
           >
             <div>
-              <Title level={2} style={{ margin: 0, color: "#FF7506" }}>
-                Dashboard
-              </Title>
+              <CustomBreadcrumb
+                size="large"
+                style={{ margin: 0, color: "#FF7506" }}
+                items={[{ title: "Dashboard" }]}
+              />
             </div>
           </div>
 
