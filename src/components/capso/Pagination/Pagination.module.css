@@ -1,0 +1,53 @@
+.paginationContainer {
+  position: absolute;
+  right: 24px;
+  bottom: -40px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Style chung cho các nút */
+.pageNumber, .arrowButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid #d9d9d9;
+  
+  color: #7e7d88;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+/* Style khi hover */
+.pageNumber:hover, .arrowButton:hover {
+  border-color: #ff9138;
+  color: #ff9138;
+}
+
+/* Style cho nút active */
+:global(.ant-pagination-item-active) {
+  background-color: #ff9138 !important;
+  border-color: #ff9138 !important;
+  color: white !important;
+}
+
+/* Style cho mũi tên */
+.arrowButton {
+  border: none;
+  background: transparent;
+  font-size: 18px;
+}
+
+.arrowButton i {
+  color: #7e7d88;
+}
+
+/* Vô hiệu hóa nút khi không click được */
+:global(.ant-pagination-disabled .arrowButton i) {
+  color: #d9d9d9 !important;
+}

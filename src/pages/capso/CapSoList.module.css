@@ -1,0 +1,160 @@
+.container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f6f6f6;
+}
+
+.topbar {
+  width: 100%;
+  flex-shrink: 0;
+  height: 60px; 
+  top: 0;
+}
+
+.contentWrapper {
+  width: 100%;
+  padding: 24px 24px; /* Giảm padding-top để title gần topbar hơn */
+  display: flex;
+  flex-direction: column;
+  background-color: #f6f6f6;
+}
+
+.pageHeader {
+  width: 100%;
+  padding: 24px 24px 0px  24px;
+  border-bottom: 1px solid #f6f6f6;
+}
+
+.mainContent {
+  width: 100%;
+  padding: 0px 24px 16px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.filterPanel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.capSoTable {
+  border-radius: 0;
+  border: 1px solid #f6f6f6;
+  overflow-x: auto;
+  width: 50%; /* hoặc bạn có thể dùng: width: 80%; */
+}
+
+.capSoTable table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.capSoTable th,
+.capSoTable td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f6f6f6;
+  text-align: left;
+}
+
+.capSoTable th {
+  background-color: #ff9138;
+  color: white;
+  font-weight: 600;
+  border-radius: 0;
+}
+
+.capSoTable td {
+  background-color: #fff;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 0;
+}
+
+.pagination button {
+  background-color: #ff9138;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pagination .active {
+  background-color: #fa8c16;
+}
+
+.floatingBtn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background-color: #ff9138;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Floating button cố định như FloatingButtonGroup */
+.floatingButton {
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1000;
+}
+
+.tableWithButton {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  margin-top: 0px;
+  position: relative; /* để tính vị trí tương đối cho button nếu cần */
+  padding-right: 100px; /* Đủ chỗ cho floating button */
+  margin-bottom: 60px; /* Tạo khoảng trống cho pagination */
+}
+
+/* Phần pagination */
+.pagination {
+  position: absolute;
+  right: 125px;
+  bottom: -80px; /* Điều chỉnh vị trí dưới bảng */
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  
+}
+
+.paginationWrapper {
+  position: absolute;
+  right: 100px;
+  bottom: -20px;
+}
+
+.filterpanel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  justify-content: flex-start;
+  margin-left: -8px; /* 👈 Di chuyển sang trái 8px */
+
+}

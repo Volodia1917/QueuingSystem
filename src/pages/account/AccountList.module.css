@@ -1,0 +1,68 @@
+.container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f6f6f6;
+}
+
+.topbar {
+  width: 100%;
+  flex-shrink: 0;
+  height: 60px;
+}
+
+.contentWrapper {
+  width: 100%;
+  padding: 24px 24px;
+  display: flex;
+  flex-direction: column;
+  background-color: #f6f6f6;
+}
+
+.pageHeader {
+  width: 100%;
+  padding: 24px 24px 0px 24px;
+  border-bottom: 1px solid #f6f6f6;
+}
+
+.mainContent {
+  width: 100%;
+  padding: 0px 24px 16px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.filterpanel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  justify-content: flex-start;
+  margin-left: -8px;
+}
+
+.tableWithButton {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  position: relative;
+  padding-right: 100px;
+  margin-bottom: 60px;
+}
+
+.floatingButton {
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1000;
+}
+
+.paginationWrapper {
+  position: absolute;
+  right: 120px;
+  bottom: -80px;
+}

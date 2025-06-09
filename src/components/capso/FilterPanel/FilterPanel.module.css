@@ -1,0 +1,221 @@
+.filterPanel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px;
+  background: #f6f6f6;
+  border-radius: 8px;
+}
+
+.filterItem {
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+}
+
+.filterItem label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #282739;
+  margin-bottom: 8px;
+}
+
+.customSelect {
+  position: relative;
+  width: 100%;
+}
+
+.customSelect select {
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  appearance: none;
+  background-color: #fff;
+  color: #333;
+  font-size: 14px;
+  font-family: 'Roboto', sans-serif;
+  transition: all 0.2s ease;
+}
+
+/* .customSelect select:hover {
+  border-color: #e66900;
+} */
+
+.customSelect select:focus {
+  border-color: #FF7506;
+  box-shadow: 0 0 0 2px rgba(255, 117, 6, 0.2);
+  outline: none;
+  background-color: #fff;
+}
+
+.customSelect select option:checked {
+  background-color: #FFE9D6; /* cam nhạt */
+  color:#282739;
+}
+
+.customSelect select option:hover {
+  background-color: #FFE9D6;
+  color: #282739;
+}
+
+.customSelect i {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #FF7506;
+  font-size: 20px;
+}
+
+.dateRange {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.dateInput {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.dateInput input[type="date"] {
+  height: 40px;
+  padding-left: 32px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.dateOnly::-webkit-calendar-picker-indicator {
+  display: none;
+  -webkit-appearance: none;
+}
+
+.leftIcon {
+  position: absolute;
+  left: 10px;
+  pointer-events: none;
+}
+
+.searchBox {
+  position: relative;
+}
+
+.searchBox input {
+  width: 180px;
+  height: 40px;
+  border-radius: 8px;
+  padding: 0 12px;
+  border: 1px solid #ccc;
+}
+
+.rightIcon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.datePickerContainer {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid #d4d4d7;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #fff;
+  width: fit-content;
+}
+
+.datePickerContainer svg {
+  margin-right: 6px;
+  color: #ff7506;
+}
+
+.dateSeparator {
+  font-size: 20px;
+  margin: 0 4px;
+}
+
+.dateText {
+  font-size: 14px;
+  color: #535261;
+}
+
+.dateRangeWrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Dropdown calendar box */
+.calendarDropdown {
+  position: absolute;
+  z-index: 100;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  padding: 10px;
+  margin-top: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* --- Tuỳ chỉnh react-date-range cho giống thiết kế --- */
+.rdrCalendarWrapper {
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px;
+  max-width: 320px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.rdrMonthAndYearWrapper {
+  justify-content: center;
+  font-weight: bold;
+  color: #FF7506;
+  padding-bottom: 8px;
+}
+
+.rdrDayNumber span {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+}
+
+.rdrDayToday .rdrDayNumber span {
+  border: none !important;
+}
+
+.rdrDayHovered .rdrDayNumber span,
+.rdrDayStartPreview .rdrDayNumber span,
+.rdrDayEndPreview .rdrDayNumber span {
+  background-color: #FF7506 !important;
+  color: white !important;
+  border-radius: 50% !important;
+}
+
+.rdrDaySelected .rdrDayNumber span {
+  background-color: #FF7506 !important;
+  color: white !important;
+  border-radius: 50% !important;
+}
+
+.rdrMonthPicker,
+.rdrYearPicker {
+  color: #333;
+}
+
+.rdrNextPrevButton {
+  display: none;
+}
+
+.rdrMonths {
+  padding: 0 12px 12px;
+}

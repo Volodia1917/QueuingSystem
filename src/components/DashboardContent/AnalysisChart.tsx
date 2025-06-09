@@ -1,5 +1,20 @@
-import { Card, Select, Space, Typography } from "antd";
-import React from "react";
+import {
+  Card,
+  Select,
+  Space,
+  Typography,
+  Spin,
+  Alert,
+  Button,
+  DatePicker,
+  Empty,
+} from "antd";
+import {
+  ReloadOutlined,
+  ExclamationCircleOutlined,
+  CalendarOutlined,
+} from "@ant-design/icons";
+import { useState, useEffect } from "react";
 import {
   AreaChart,
   Area,
@@ -10,49 +25,32 @@ import {
   ResponsiveContainer,
   ReferenceLine,
 } from "recharts";
+import dayjs from "dayjs";
+
+import { getStatisticChartData } from "../../libraries/statistic";
+import { getErrorMessage } from "../../libraries/useApi";
 
 const { Title, Text } = Typography;
 const { Option } = Select;
+const { RangePicker } = DatePicker;
 
-const data = [
-  {
-    name: "01",
-    value: 2400,
-  },
-  {
-    name: "05",
-    value: 3200,
-  },
-  {
-    name: "10",
-    value: 4000,
-  },
-  {
-    name: "13",
-    value: 3200,
-  },
-  {
-    name: "16",
-    value: 3500,
-  },
-  {
-    name: "19",
-    value: 4221,
-    isHighest: true,
-  },
-  {
-    name: "22",
-    value: 3800,
-  },
-  {
-    name: "26",
-    value: 4100,
-  },
-  {
-    name: "31",
-    value: 3700,
-  },
-];
+interface StatisticData {
+  name: string; // trục x
+  value: number; // trục y
+  isHighest?: boolean;
+}
+
+interface ChartDataItem {
+  $id: string;
+  date: string;
+  value: number;
+  period: string;
+}
+
+interface ChartDataResponse {
+  $id: string;
+  $values: ChartDataItem[];
+}
 
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
@@ -70,7 +68,7 @@ const CustomTooltip = ({ active, payload }: any) => {
             fontWeight: "bold",
           }}
         >
-          {dataPoint.value}
+          {dataPoint.value.toLocaleString("vi-VN")}
         </div>
       );
     }
@@ -79,7 +77,131 @@ const CustomTooltip = ({ active, payload }: any) => {
   return null;
 };
 
+type PeriodType = "day" | "week" | "month" | "year";
+
+const PERIOD_OPTIONS = [
+  { value: "day", label: "Ngày", vietnameseName: "ngày" },
+  { value: "week", label: "Tuần", vietnameseName: "tuần" },
+  { value: "month", label: "Tháng", vietnameseName: "tháng" },
+  { value: "year", label: "Năm", vietnameseName: "năm" },
+];
+
 export const AnalysisChart = () => {
+  const [data, setData] = useState<StatisticData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
+  const [period, setPeriod] = useState<PeriodType>("month");
+  const [dateRange, setDateRange] = useState<
+    [dayjs.Dayjs | null, dayjs.Dayjs | null] | null
+  >(null);
+  const [useCustomRange, setUseCustomRange] = useState(false);
+
+  const processApiData = (apiResponse: ChartDataResponse): StatisticData[] => {
+    if (
+      !apiResponse ||
+      !apiResponse.$values ||
+      !Array.isArray(apiResponse.$values)
+    ) {
+      return [];
+    }
+
+    const chartData = apiResponse.$values;
+    const maxValue = Math.max(...chartData.map((item) => item.value || 0));
+
+    return chartData.map((item) => ({
+      name: item.date || "",
+      value: item.value || 0,
+      isHighest: (item.value || 0) === maxValue,
+    }));
+  };
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      let startDate: string | undefined;
+      let endDate: string | undefined;
+
+      // If custom date range is selected, use it
+      if (useCustomRange && dateRange && dateRange[0] && dateRange[1]) {
+        startDate = dateRange[0].format("YYYY-MM-DD");
+        endDate = dateRange[1].format("YYYY-MM-DD");
+      }
+
+      const apiResponse: ChartDataResponse = await getStatisticChartData(
+        period,
+        startDate,
+        endDate
+      );
+
+      const processedData = processApiData(apiResponse);
+      setData(processedData);
+    } catch (error: any) {
+      console.error("Error fetching chart data:", error);
+
+      const errorMessage = getErrorMessage(error);
+      setError(errorMessage);
+      setData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRetry = () => {
+    setRetryCount((prev) => prev + 1);
+    fetchData();
+  };
+
+  const handlePeriodChange = (value: PeriodType) => {
+    setPeriod(value);
+
+    setUseCustomRange(false);
+    setDateRange(null);
+  };
+
+  const handleDateRangeChange = (
+    dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] | null
+  ) => {
+    setDateRange(dates);
+    setUseCustomRange(!!dates);
+  };
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      fetchData();
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }, [period, dateRange, useCustomRange]);
+
+  const currentPeriodInfo = PERIOD_OPTIONS.find((p) => p.value === period);
+  const highestPoint = data.find((item) => item.isHighest);
+  const maxValue = Math.max(...data.map((item) => item.value), 0);
+  const yAxisMax = maxValue === 0 ? 100 : Math.ceil(maxValue * 1.2);
+
+  const getDateRangeText = () => {
+    if (useCustomRange && dateRange && dateRange[0] && dateRange[1]) {
+      return `${dateRange[0].format("DD/MM/YYYY")} - ${dateRange[1].format(
+        "DD/MM/YYYY"
+      )}`;
+    }
+
+    switch (period) {
+      case "day":
+        return `30 ngày gần nhất`;
+      case "week":
+        return `4 tuần gần nhất`;
+      case "month":
+        return `12 tháng gần nhất`;
+      case "year":
+        return `5 năm gần nhất`;
+      default:
+        return "";
+    }
+  };
+
   return (
     <Card
       style={{
@@ -92,81 +214,197 @@ export const AnalysisChart = () => {
         style={{
           display: "flex",
           justifyContent: "space-between",
-          alignItems: "center",
+          alignItems: "flex-start",
           marginBottom: "20px",
+          flexWrap: "wrap",
+          gap: "12px",
         }}
       >
         <div>
           <Title level={5} style={{ margin: 0 }}>
-            Bảng thống kê theo ngày
+            Bảng thống kê theo {currentPeriodInfo?.vietnameseName}
           </Title>
-          <Text type="secondary">Tháng 11/2021</Text>
+          <Text type="secondary">{getDateRangeText()}</Text>
         </div>
-        <Space>
-          <Text>Xem theo</Text>
-          <Select defaultValue="ngay" style={{ width: 120 }}>
-            <Option value="ngay">Ngày</Option>
-            <Option value="tuan">Tuần</Option>
-            <Option value="thang">Tháng</Option>
-          </Select>
-        </Space>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "8px",
+            alignItems: "flex-end",
+          }}
+        >
+          <Space size="large" wrap>
+            <Space>
+              <Text>Khoảng thời gian</Text>
+              <RangePicker
+                value={dateRange}
+                onChange={handleDateRangeChange}
+                format="DD/MM/YYYY"
+                placeholder={["Ngày bắt đầu", "Ngày kết thúc"]}
+                style={{ width: 240 }}
+                disabled={loading}
+                allowClear
+                suffixIcon={<CalendarOutlined />}
+              />
+            </Space>
+
+            <Space>
+              <Text>Xem theo</Text>
+              <Select
+                value={period}
+                style={{ width: 120 }}
+                onChange={handlePeriodChange}
+                loading={loading}
+              >
+                {PERIOD_OPTIONS.map((option) => (
+                  <Option key={option.value} value={option.value}>
+                    {option.label}
+                  </Option>
+                ))}
+              </Select>
+            </Space>
+          </Space>
+
+          {useCustomRange && (
+            <Text type="secondary" style={{ fontSize: "12px" }}>
+              Sử dụng khoảng thời gian tùy chỉnh
+            </Text>
+          )}
+        </div>
       </div>
-      <div style={{ height: "300px", width: "100%" }}>
-        <ResponsiveContainer>
-          <AreaChart
-            data={data}
-            margin={{
-              top: 20,
-              right: 30,
-              left: 20,
-              bottom: 20,
-            }}
+
+      {error && (
+        <Alert
+          message="Lỗi tải dữ liệu biểu đồ"
+          description={
+            <Space direction="vertical" size="small" style={{ width: "100%" }}>
+              <Text>{error}</Text>
+              <Space>
+                <Button
+                  type="primary"
+                  icon={<ReloadOutlined />}
+                  size="small"
+                  onClick={handleRetry}
+                  loading={loading}
+                >
+                  Thử lại
+                </Button>
+                {retryCount > 0 && (
+                  <Text type="secondary" style={{ fontSize: "12px" }}>
+                    Đã thử lại {retryCount} lần
+                  </Text>
+                )}
+              </Space>
+            </Space>
+          }
+          type="warning"
+          showIcon
+          icon={<ExclamationCircleOutlined />}
+          style={{
+            marginBottom: "16px",
+            borderRadius: "8px",
+          }}
+          closable
+          onClose={() => setError(null)}
+        />
+      )}
+
+      {loading ? (
+        <div
+          style={{
+            height: "300px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Spin size="large" />
+        </div>
+      ) : data.length === 0 && !error ? (
+        <Empty
+          image={Empty.PRESENTED_IMAGE_SIMPLE}
+          description="Không có dữ liệu biểu đồ"
+          style={{
+            height: "300px",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            background: "#fafafa",
+            borderRadius: "8px",
+          }}
+        >
+          <Button
+            type="primary"
+            icon={<ReloadOutlined />}
+            onClick={handleRetry}
           >
-            <defs>
-              <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#CFE0FF" stopOpacity={0.8} />
-                <stop offset="95%" stopColor="#CFE0FF" stopOpacity={0.2} />
-              </linearGradient>
-            </defs>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} />
-            <XAxis
-              dataKey="name"
-              axisLine={false}
-              tickLine={false}
-              tickMargin={10}
-              tick={{ fontSize: 12 }}
-              tickFormatter={(value) => `${value}/ngày`}
-            />
-            <YAxis
-              axisLine={false}
-              tickLine={false}
-              tickCount={6}
-              domain={[0, 6000]}
-              tick={{ fontSize: 12 }}
-            />
-            <Tooltip content={<CustomTooltip />} />
-            <ReferenceLine
-              x="19"
-              stroke="#4277FF"
-              strokeDasharray="3 3"
-              strokeWidth={1}
-            />
-            <Area
-              type="monotone"
-              dataKey="value"
-              stroke="#4277FF"
-              fill="url(#colorValue)"
-              strokeWidth={2}
-              activeDot={{
-                r: 6,
-                fill: "white",
-                stroke: "#4277FF",
-                strokeWidth: 2,
+            Tải lại
+          </Button>
+        </Empty>
+      ) : (
+        <div style={{ height: "300px", width: "100%" }}>
+          <ResponsiveContainer>
+            <AreaChart
+              data={data}
+              margin={{
+                top: 20,
+                right: 30,
+                left: 20,
+                bottom: 20,
               }}
-            />
-          </AreaChart>
-        </ResponsiveContainer>
-      </div>
+            >
+              <defs>
+                <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#CFE0FF" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#CFE0FF" stopOpacity={0.2} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} />
+              <XAxis
+                dataKey="name"
+                axisLine={false}
+                tickLine={false}
+                tickMargin={10}
+                tick={{ fontSize: 12 }}
+                tickFormatter={(value) => value}
+              />
+              <YAxis
+                axisLine={false}
+                tickLine={false}
+                tickCount={6}
+                domain={[0, yAxisMax]}
+                tick={{ fontSize: 12 }}
+                tickFormatter={(value) => value.toLocaleString("vi-VN")}
+              />
+              <Tooltip content={<CustomTooltip />} />
+              {highestPoint && (
+                <ReferenceLine
+                  x={highestPoint.name}
+                  stroke="#4277FF"
+                  strokeDasharray="3 3"
+                  strokeWidth={1}
+                />
+              )}
+              <Area
+                type="monotone"
+                dataKey="value"
+                stroke="#4277FF"
+                fill="url(#colorValue)"
+                strokeWidth={2}
+                activeDot={{
+                  r: 6,
+                  fill: "white",
+                  stroke: "#4277FF",
+                  strokeWidth: 2,
+                }}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      )}
     </Card>
   );
 };

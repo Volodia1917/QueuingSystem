@@ -1,18 +1,39 @@
-import { Row, Col, Card, Typography, Space } from "antd";
-import { ArrowUpOutlined, ArrowDownOutlined } from "@ant-design/icons";
+import { Row, Col, Card, Typography, Space, Alert, Button, Empty } from "antd";
+import {
+  ArrowUpOutlined,
+  ArrowDownOutlined,
+  ReloadOutlined,
+  ExclamationCircleOutlined,
+} from "@ant-design/icons";
+import { ReactNode, useEffect, useState } from "react";
+
 import { Icons } from "../Icons/Icons";
-import { ReactNode } from "react";
+
+import { getStatisticNumbersOverview } from "../../libraries/statistic";
+import { getErrorMessage } from "../../libraries/useApi";
 
 const { Text } = Typography;
 
 interface CardData {
-  key: string;
   icon: ReactNode;
   bgColor: string;
   title: string;
   value: string;
   percentage: string;
   status: "increase" | "decrease";
+}
+
+interface StatisticItem {
+  title: string;
+  value: number;
+  percentageChange: number;
+  isIncrease: boolean;
+  icon: string;
+  color: string;
+}
+
+interface StatisticResponse {
+  [key: string]: StatisticItem;
 }
 
 const StatCard = ({ data }: { data: CardData }) => {
@@ -52,7 +73,7 @@ const StatCard = ({ data }: { data: CardData }) => {
             marginTop: "6px",
             display: "flex",
             justifyContent: "space-between",
-            padding: "6px"
+            padding: "6px",
           }}
         >
           <Text
@@ -102,53 +123,167 @@ const StatCard = ({ data }: { data: CardData }) => {
   );
 };
 
-const cardData: CardData[] = [
-  {
-    key: "issued",
-    icon: <Icons.TicketIssued />,
-    bgColor: "#E1F0FF",
-    title: "Số thứ tự đã cấp",
-    value: "4.221",
-    percentage: "32.41%",
-    status: "increase",
-  },
-  {
-    key: "used",
-    icon: <Icons.TicketUsed />,
-    bgColor: "#E1F7E8",
-    title: "Số thứ tự đã sử dụng",
-    value: "3.721",
-    percentage: "32.41%",
-    status: "decrease",
-  },
-  {
-    key: "waiting",
-    icon: <Icons.TicketPending />,
-    bgColor: "#FFF3E9",
-    title: "Số thứ tự đang chờ",
-    value: "468",
-    percentage: "56.41%",
-    status: "increase",
-  },
-  {
-    key: "skipped",
-    icon: <Icons.TicketSkipped />,
-    bgColor: "#FEE9E9",
-    title: "Số thứ tự đã bỏ qua",
-    value: "32",
-    percentage: "22.41%",
-    status: "decrease",
-  },
-];
+// Helper function to get icon component by icon name
+const getIconByName = (iconName: string): ReactNode => {
+  const iconMap: Record<string, ReactNode> = {
+    "ticket-issued": <Icons.TicketIssued />,
+    "ticket-used": <Icons.TicketUsed />,
+    "ticket-waiting": <Icons.TicketPending />,
+    "ticket-skipped": <Icons.TicketSkipped />,
+  };
 
-const DashboardCards = () => (
-  <Row gutter={[16, 16]}>
-    {cardData.map((card) => (
-      <Col xs={24} sm={12} md={12} lg={6} key={card.key}>
-        <StatCard data={card} />
-      </Col>
-    ))}
-  </Row>
-);
+  return iconMap[iconName] || <Icons.TicketIssued />;
+};
+
+// Helper function to format number with thousands separator
+const formatNumber = (num: number): string => {
+  return num.toLocaleString("vi-VN");
+};
+
+const getStatus = (increase: boolean) => (increase ? "increase" : "decrease");
+
+// Define display order for known fields
+const FIELD_ORDER = ["total", "used", "waiting", "skipped"];
+
+// Function to sort fields based on predefined order, with unknown fields at the end
+const sortFieldsByOrder = (fields: string[]): string[] => {
+  const knownFields = FIELD_ORDER.filter((field) => fields.includes(field));
+  const unknownFields = fields.filter((field) => !FIELD_ORDER.includes(field));
+  return [...knownFields, ...unknownFields];
+};
+
+const DashboardCards = () => {
+  const [cardData, setCardData] = useState<CardData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const response: StatisticResponse = await getStatisticNumbersOverview();
+
+      // Get all fields from response (excluding $id fields)
+      const fields = Object.keys(response).filter(
+        (key) => !key.startsWith("$")
+      );
+
+      // Sort fields based on predefined order
+      const sortedFields = sortFieldsByOrder(fields);
+
+      const mappedData: CardData[] = sortedFields.map((fieldKey) => {
+        const item = response[fieldKey];
+        return {
+          bgColor: item.color,
+          icon: getIconByName(item.icon),
+          title: item.title,
+          value: formatNumber(item.value),
+          percentage: `${Math.abs(item.percentageChange)}%`,
+          status: getStatus(item.isIncrease),
+        };
+      });
+
+      setCardData(mappedData);
+    } catch (error: any) {
+      console.error("Error fetching dashboard statistics:", error);
+
+      const errorMessage = getErrorMessage(error);
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRetry = () => {
+    setRetryCount((prev) => prev + 1);
+    fetchData();
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <Row gutter={[16, 16]}>
+        {[1, 2, 3, 4].map((item) => (
+          <Col xs={24} sm={12} md={12} lg={6} key={item}>
+            <Card loading style={{ borderRadius: "12px", height: "120px" }} />
+          </Col>
+        ))}
+      </Row>
+    );
+  }
+
+  return (
+    <>
+      {error && (
+        <Alert
+          message="Lỗi tải dữ liệu"
+          description={
+            <Space direction="vertical" size="small" style={{ width: "100%" }}>
+              <Text>{error}</Text>
+              <Space>
+                <Button
+                  type="primary"
+                  icon={<ReloadOutlined />}
+                  size="small"
+                  onClick={handleRetry}
+                  loading={loading}
+                >
+                  Thử lại
+                </Button>
+                {retryCount > 0 && (
+                  <Text type="secondary" style={{ fontSize: "12px" }}>
+                    Đã thử lại {retryCount} lần
+                  </Text>
+                )}
+              </Space>
+            </Space>
+          }
+          type="warning"
+          showIcon
+          icon={<ExclamationCircleOutlined />}
+          style={{
+            marginBottom: "16px",
+            borderRadius: "8px",
+          }}
+          closable
+          onClose={() => setError(null)}
+        />
+      )}
+
+      {cardData.length === 0 && !loading && !error ? (
+        <Empty
+          image={Empty.PRESENTED_IMAGE_SIMPLE}
+          description="Không có dữ liệu thống kê"
+          style={{
+            padding: "40px 0",
+            background: "#fafafa",
+            borderRadius: "8px",
+          }}
+        >
+          <Button
+            type="primary"
+            icon={<ReloadOutlined />}
+            onClick={handleRetry}
+          >
+            Tải lại
+          </Button>
+        </Empty>
+      ) : (
+        <Row gutter={[16, 16]}>
+          {cardData.map((card, index) => (
+            <Col xs={24} sm={12} md={12} lg={6} key={`card-${index}`}>
+              <StatCard data={card} />
+            </Col>
+          ))}
+        </Row>
+      )}
+    </>
+  );
+};
 
 export default DashboardCards;

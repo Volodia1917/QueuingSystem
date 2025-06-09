@@ -1,0 +1,39 @@
+/* CapSoTable.module.css */
+
+.wrapper {
+  padding: 0; /* Bỏ padding nếu có */
+  background: none; /* Xóa nền trắng */
+  box-shadow: none; /* Bỏ đổ bóng nếu có */
+  border-radius: 0; /* Bỏ bo góc */
+  width: 100%;
+  margin-top: 0px;
+}
+
+.table :global(.ant-table) {
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+.table :global(.ant-table-container) {
+  background-color: transparent !important;
+}
+
+.table :global(.ant-table-thead > tr > th) {
+  background-color: #ff9138 !important; /* Cam đậm */
+  color: white;
+  text-align: center;
+  font-weight: 600;
+}
+
+.table :global(.ant-table-tbody > tr > td) {
+  text-align: center;
+  padding: 12px 8px;
+}
+
+.evenRow {
+  background-color: #ffffff;
+}
+
+.oddRow {
+  background-color: #fff2e7;
+}

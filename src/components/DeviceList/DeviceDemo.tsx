@@ -16,7 +16,7 @@ interface DeviceData {
   services: string;
 }
 
-export const DeviceDemo: React.FC = () => {
+export const  DeviceDemo: React.FC = () => {
   const [currentView, setCurrentView] = useState<ViewType>("list");
   const [selectedDevice, setSelectedDevice] = useState<DeviceData | null>(null);
 
