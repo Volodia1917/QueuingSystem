@@ -4,6 +4,7 @@ import { Button, Form, Input, Alert, Flex } from "antd";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import styles from "./Form.module.css";
 import { getLogin } from "../../libraries/getLogin";
+import { BACKEND_URL, getToken } from "../../libraries/useApi";
 
 type FieldType = {
 	username: string;
@@ -21,37 +22,35 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
 
 	// Xử lý khi submit form đăng nhập
 	const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
-		console.log("Success:", values);
-
 		const username = values.username;
 		const password = values.password;
 
-		// Test thủ công
-		if (username == "dino" && password == "123") {
-			localStorage.setItem("isLogined", "true");
-			const checked = localStorage.getItem("isLogined");
-			console.log("Check Logined: ", checked);
-			window.location.reload();
-		} else {
-			setFormError("Sai mật khẩu hoặc tên đăng nhập");
-		}
+		// // Test thủ công
+		// if (username == "dino" && password == "123") {
+		// 	localStorage.setItem("isLogined", "true");
+		// 	const checked = localStorage.getItem("isLogined");
+		// 	console.log("Check Logined: ", checked);
+		// 	window.location.reload();
+		// } else {
+		// 	setFormError("Sai mật khẩu hoặc tên đăng nhập");
+		// }
 
 		let dataLogin: any = await getLogin(
-			"http://192.168.80.126:5013/api/Authenticate",
+			`${BACKEND_URL}/Authentication/login`,
 			username,
 			password
 		);
 
-		if (dataLogin?.success) {
+		if (!dataLogin?.message && dataLogin.user && dataLogin.token) {
 			localStorage.setItem("isLogined", "true");
 			localStorage.setItem("username", username);
-			localStorage.setItem("userFullName", dataLogin.userFullName);
-			localStorage.setItem("avatar", dataLogin.avatar);
-			localStorage.setItem("token", dataLogin.token);
-			localStorage.setItem("tokenRefresh", dataLogin.tokenRefresh);
+			localStorage.setItem("userFullName", dataLogin.user.fullName || "");
+			localStorage.setItem("avatar", dataLogin.user.avatarUrl || "");
+			localStorage.setItem("token", dataLogin.token.accessToken || "");
+			localStorage.setItem("tokenRefresh", dataLogin.token.refreshToken || "");
 			window.location.reload();
 		} else {
-			setFormError(dataLogin?.error || "Sai tài khoản hoặc mật khẩu");
+			setFormError("Sai tài khoản hoặc mật khẩu");
 		}
 	};
 
