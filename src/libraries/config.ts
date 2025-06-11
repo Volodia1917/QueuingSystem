@@ -1,3 +1,15 @@
+export const MENU_KEYS = {
+  DASHBOARD: "dashboard",
+  DEVICE: "device",
+  SERVICE: "service",
+  CAP_SO: "cap-so",
+  SYSTEM_SETTINGS: "system-settings",
+  ROLE_MANAGEMENT: "role-management",
+  ACCOUNT_MANAGEMENT: "account-management",
+  USER_LOG: "user-log",
+} as const;
+export type MenuKey = (typeof MENU_KEYS)[keyof typeof MENU_KEYS];
+
 export const config = {
   backendUrl: process.env.REACT_APP_BACKEND_URL,
   apiTimeout: Number(process.env.REACT_APP_API_TIMEOUT) || 5000,

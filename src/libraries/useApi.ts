@@ -6,6 +6,38 @@ export const getToken = () => {
   return localStorage.getItem("token") || "";
 };
 
+
+export const getUserRole = (): UserRole => {
+  return (localStorage.getItem("role") || "") as UserRole;
+};
+
+export const checkMenuAccess = (
+  menuKey: MenuKey,
+  userRole: UserRole
+): boolean => {
+  switch (userRole) {
+    case "Doctor":
+      return menuKey === MENU_KEYS.CAP_SO;
+
+    case "Staff":
+      return menuKey !== MENU_KEYS.ACCOUNT_MANAGEMENT;
+
+    case "Admin":
+    default:
+      // Admin và các role khác có quyền truy cập tất cả
+      return true;
+  }
+};
+
+export const getDefaultMenuForRole = (userRole: UserRole): MenuKey => {
+  switch (userRole) {
+    case "Doctor":
+      return MENU_KEYS.CAP_SO;
+    default:
+      return MENU_KEYS.DASHBOARD;
+  }
+};
+
 export const getErrorMessage = (error: any) => {
   if (error?.response?.status === 401) {
     return "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.";
