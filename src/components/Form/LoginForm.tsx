@@ -4,7 +4,7 @@ import { Button, Form, Input, Alert, Flex } from "antd";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import styles from "./Form.module.css";
 import { getLogin } from "../../libraries/getLogin";
-import { BACKEND_URL, getToken } from "../../libraries/useApi";
+import { API_URL, getToken } from "../../libraries/useApi";
 
 type FieldType = {
 	username: string;
@@ -36,7 +36,7 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
 		// }
 
 		let dataLogin: any = await getLogin(
-			`${BACKEND_URL}/Authentication/login`,
+			`${API_URL}/Authentication/login`,
 			username,
 			password
 		);

@@ -1,4 +1,6 @@
-export const BACKEND_URL = "http://localhost:5006/api";
+import { config } from "./config";
+
+export const API_URL = `${config.backendUrl}/api`;
 
 export const getToken = () => {
   return localStorage.getItem("token") || "";

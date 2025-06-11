@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import { Button, Layout, Menu, Image, type MenuProps } from "antd";
 import { LeftSidebarIcons } from "./LeftSidebarIcons";
 import "./LeftSidebar.css";
+import { BreadcrumbProvider } from "./BreadcrumbContext";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -61,6 +62,7 @@ const LeftSidebar = (props:{
 
   return (
     <Layout style={{height: "100vh"}}>
+      <BreadcrumbProvider>
       <Sider
         trigger={null}
         collapsible
@@ -127,6 +129,7 @@ const LeftSidebar = (props:{
         ) : null}
         <Content>{props.content}</Content>
       </Layout>
+      </BreadcrumbProvider>
     </Layout>
   );
 };
