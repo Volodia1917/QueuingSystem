@@ -32,7 +32,6 @@ import { getErrorMessage } from "../../libraries/useApi";
 
 const { Title, Text } = Typography;
 const { Option } = Select;
-const { RangePicker } = DatePicker;
 
 interface StatisticData {
   name: string; // trục x
@@ -92,10 +91,8 @@ export const AnalysisChart = () => {
   const [error, setError] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
   const [period, setPeriod] = useState<PeriodType>("month");
-  const [dateRange, setDateRange] = useState<
-    [dayjs.Dayjs | null, dayjs.Dayjs | null] | null
-  >(null);
-  const [useCustomRange, setUseCustomRange] = useState(false);
+  const [selectedMonth, setSelectedMonth] = useState<dayjs.Dayjs | null>(null);
+  const [useCustomMonth, setUseCustomMonth] = useState(false);
 
   const processApiData = (apiResponse: ChartDataResponse): StatisticData[] => {
     if (
@@ -121,19 +118,16 @@ export const AnalysisChart = () => {
       setLoading(true);
       setError(null);
 
-      let startDate: string | undefined;
-      let endDate: string | undefined;
+      let month: string | undefined;
 
-      // If custom date range is selected, use it
-      if (useCustomRange && dateRange && dateRange[0] && dateRange[1]) {
-        startDate = dateRange[0].format("YYYY-MM-DD");
-        endDate = dateRange[1].format("YYYY-MM-DD");
+      // If custom month is selected, use it
+      if (useCustomMonth && selectedMonth) {
+        month = selectedMonth.format("YYYY-MM");
       }
 
       const apiResponse: ChartDataResponse = await getStatisticChartData(
         period,
-        startDate,
-        endDate
+        month
       );
 
       const processedData = processApiData(apiResponse);
@@ -157,15 +151,13 @@ export const AnalysisChart = () => {
   const handlePeriodChange = (value: PeriodType) => {
     setPeriod(value);
 
-    setUseCustomRange(false);
-    setDateRange(null);
+    setUseCustomMonth(false);
+    setSelectedMonth(null);
   };
 
-  const handleDateRangeChange = (
-    dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] | null
-  ) => {
-    setDateRange(dates);
-    setUseCustomRange(!!dates);
+  const handleMonthChange = (month: dayjs.Dayjs | null) => {
+    setSelectedMonth(month);
+    setUseCustomMonth(!!month);
   };
 
   useEffect(() => {
@@ -174,7 +166,7 @@ export const AnalysisChart = () => {
     }, 300);
 
     return () => clearTimeout(timeoutId);
-  }, [period, dateRange, useCustomRange]);
+  }, [period, selectedMonth, useCustomMonth]);
 
   const currentPeriodInfo = PERIOD_OPTIONS.find((p) => p.value === period);
   const highestPoint = data.find((item) => item.isHighest);
@@ -182,10 +174,8 @@ export const AnalysisChart = () => {
   const yAxisMax = maxValue === 0 ? 100 : Math.ceil(maxValue * 1.2);
 
   const getDateRangeText = () => {
-    if (useCustomRange && dateRange && dateRange[0] && dateRange[1]) {
-      return `${dateRange[0].format("DD/MM/YYYY")} - ${dateRange[1].format(
-        "DD/MM/YYYY"
-      )}`;
+    if (useCustomMonth && selectedMonth) {
+      return `Tháng ${selectedMonth.format("MM/YYYY")}`;
     }
 
     switch (period) {
@@ -237,13 +227,14 @@ export const AnalysisChart = () => {
         >
           <Space size="large" wrap>
             <Space>
-              <Text>Khoảng thời gian</Text>
-              <RangePicker
-                value={dateRange}
-                onChange={handleDateRangeChange}
-                format="DD/MM/YYYY"
-                placeholder={["Ngày bắt đầu", "Ngày kết thúc"]}
-                style={{ width: 240 }}
+              <Text>Chọn tháng</Text>
+              <DatePicker
+                value={selectedMonth}
+                onChange={handleMonthChange}
+                picker="month"
+                format="MM/YYYY"
+                placeholder="Chọn tháng"
+                style={{ width: 160 }}
                 disabled={loading}
                 allowClear
                 suffixIcon={<CalendarOutlined />}
@@ -267,9 +258,9 @@ export const AnalysisChart = () => {
             </Space>
           </Space>
 
-          {useCustomRange && (
+          {useCustomMonth && (
             <Text type="secondary" style={{ fontSize: "12px" }}>
-              Sử dụng khoảng thời gian tùy chỉnh
+              Sử dụng tháng tùy chỉnh
             </Text>
           )}
         </div>

@@ -24,13 +24,12 @@ export const getStatisticOverallSummary = async () => {
 
 export const getStatisticChartData = async (
   period: string,
-  startDate?: string,
-  endDate?: string
+  month?: string,
 ) => {
   const data = await fetch(
     `${API_URL}/Statistic/chart-data?period=${period}${
-      startDate ? `&startDate=${startDate}` : ""
-    }${endDate ? `&endDate=${endDate}` : ""}`,
+      month ? `&month=${month}` : ""
+    }`,
     {
       method: "GET",
       headers: {

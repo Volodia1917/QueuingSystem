@@ -6,9 +6,9 @@ import { Icons } from "../Icons/Icons";
 import OverviewCalendar from "./Calendar";
 import { OverviewItem, type OverviewItemData } from "./OverviewItem";
 import { UserPart } from "../User/UserPart";
+import { useApiWithRefresh } from "../../hooks/useApiWithRefresh";
 
 import { getStatisticOverallSummary } from "../../libraries/statistic";
-import { getErrorMessage } from "../../libraries/useApi";
 
 const { Text, Title } = Typography;
 
@@ -57,15 +57,17 @@ const sortFieldsByOrder = (fields: string[]): string[] => {
 
 export const OverviewRightSidebar = () => {
   const [overviewItems, setOverviewItems] = useState<OverviewItemData[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [retryCount, setRetryCount] = useState(0);
+  const {
+    loading,
+    error,
+    isRefreshingToken,
+    executeWithRefresh,
+    clearError,
+    retryCount,
+  } = useApiWithRefresh();
 
   const fetchData = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
+    const result = await executeWithRefresh(async () => {
       const response: OverallSummaryResponse =
         await getStatisticOverallSummary();
 
@@ -94,13 +96,13 @@ export const OverviewRightSidebar = () => {
         };
       });
 
-      setOverviewItems(mappedData);
-    } catch (error: any) {
-      console.error("Error fetching overview statistics:", error);
+      return mappedData;
+    });
 
-      const errorMessage = getErrorMessage(error);
-      setError(errorMessage);
-
+    if (result) {
+      setOverviewItems(result);
+    } else {
+      // Set fallback data when API fails
       setOverviewItems([
         {
           id: "devices",
@@ -143,14 +145,13 @@ export const OverviewRightSidebar = () => {
           ],
         },
       ]);
-    } finally {
-      setLoading(false);
     }
   };
 
   const handleRetry = () => {
-    setRetryCount((prev) => prev + 1);
-    fetchData();
+    if (!isRefreshingToken) {
+      fetchData();
+    }
   };
 
   useEffect(() => {
@@ -217,9 +218,10 @@ export const OverviewRightSidebar = () => {
                   icon={<ReloadOutlined />}
                   size="small"
                   onClick={handleRetry}
-                  loading={loading}
+                  loading={loading || isRefreshingToken}
+                  disabled={isRefreshingToken}
                 >
-                  Thử lại
+                  {isRefreshingToken ? "Đang làm mới..." : "Thử lại"}
                 </Button>
                 {retryCount > 0 && (
                   <Text type="secondary" style={{ fontSize: "12px" }}>
@@ -237,7 +239,7 @@ export const OverviewRightSidebar = () => {
             borderRadius: "8px",
           }}
           closable
-          onClose={() => setError(null)}
+          onClose={clearError}
         />
       )}
 
@@ -265,8 +267,10 @@ export const OverviewRightSidebar = () => {
               type="primary"
               icon={<ReloadOutlined />}
               onClick={handleRetry}
+              loading={loading || isRefreshingToken}
+              disabled={isRefreshingToken}
             >
-              Tải lại
+              {isRefreshingToken ? "Đang làm mới..." : "Tải lại"}
             </Button>
           </Empty>
         ) : (
@@ -278,6 +282,7 @@ export const OverviewRightSidebar = () => {
 
       <div style={{ marginTop: "16px" }}>
         <OverviewCalendar defaultDate={new Date(2021, 10, 19)} />
+        {/* <OverviewCalendar defaultDate={new Date()} /> */}
       </div>
     </div>
   );

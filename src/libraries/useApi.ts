@@ -1,11 +1,22 @@
 import { config } from "./config";
+import { MENU_KEYS } from "./config";
+import { type MenuKey } from "./config";
 
 export const API_URL = `${config.backendUrl}/api`;
+
+export type UserRole = "Doctor" | "Staff" | "Admin" | "";
 
 export const getToken = () => {
   return localStorage.getItem("token") || "";
 };
 
+export const getTokenRefresh = () => {
+  return localStorage.getItem("tokenRefresh") || "";
+};
+
+export const getEmailCurrentUser = () => {
+  return localStorage.getItem("email") || "";
+};
 
 export const getUserRole = (): UserRole => {
   return (localStorage.getItem("role") || "") as UserRole;
@@ -57,4 +68,57 @@ export const getErrorMessage = (error: any) => {
   } else {
     return "Lỗi không xác định. Vui lòng thử lại.";
   }
+};
+
+export const refreshToken = async (
+  onSuccess?: () => void,
+  onError?: () => void
+) => {
+  try {
+    const response = await fetch(`${API_URL}/Authentication/refresh-token`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: getEmailCurrentUser(),
+        refreshToken: getTokenRefresh(),
+      }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("tokenRefresh", data.refreshToken);
+      onSuccess?.();
+    } else {
+      localStorage.removeItem("token");
+      localStorage.removeItem("tokenRefresh");
+      localStorage.removeItem("email");
+      onError?.();
+    }
+  } catch (error) {
+    console.error("Error refreshing token:", error);
+
+    localStorage.removeItem("token");
+    localStorage.removeItem("tokenRefresh");
+    localStorage.removeItem("email");
+    onError?.();
+  }
+};
+
+export const handleError = (
+  error: any,
+  callback?: () => void,
+  onRefreshError?: () => void
+) => {
+  const errorMessage = getErrorMessage(error);
+
+  if (error?.response?.status === 401) {
+    refreshToken(callback, () => {
+      onRefreshError?.();
+    });
+  }
+
+  return errorMessage;
 };

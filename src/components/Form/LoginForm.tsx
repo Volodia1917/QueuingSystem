@@ -44,8 +44,10 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
 		if (!dataLogin?.message && dataLogin.user && dataLogin.token) {
 			localStorage.setItem("isLogined", "true");
 			localStorage.setItem("username", username);
+			localStorage.setItem("email", dataLogin.user.email || "");
 			localStorage.setItem("userFullName", dataLogin.user.fullName || "");
 			localStorage.setItem("avatar", dataLogin.user.avatarUrl || "");
+			localStorage.setItem("role", dataLogin.user.userRole || "");
 			localStorage.setItem("token", dataLogin.token.accessToken || "");
 			localStorage.setItem("tokenRefresh", dataLogin.token.refreshToken || "");
 			window.location.reload();

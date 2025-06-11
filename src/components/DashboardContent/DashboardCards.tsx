@@ -8,9 +8,9 @@ import {
 import { ReactNode, useEffect, useState } from "react";
 
 import { Icons } from "../Icons/Icons";
+import { useApiWithRefresh } from "../../hooks/useApiWithRefresh";
 
 import { getStatisticNumbersOverview } from "../../libraries/statistic";
-import { getErrorMessage } from "../../libraries/useApi";
 
 const { Text } = Typography;
 
@@ -154,15 +154,17 @@ const sortFieldsByOrder = (fields: string[]): string[] => {
 
 const DashboardCards = () => {
   const [cardData, setCardData] = useState<CardData[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [retryCount, setRetryCount] = useState(0);
+  const {
+    loading,
+    error,
+    isRefreshingToken,
+    executeWithRefresh,
+    clearError,
+    retryCount,
+  } = useApiWithRefresh();
 
   const fetchData = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
+    const result = await executeWithRefresh(async () => {
       const response: StatisticResponse = await getStatisticNumbersOverview();
 
       // Get all fields from response (excluding $id fields)
@@ -185,20 +187,18 @@ const DashboardCards = () => {
         };
       });
 
-      setCardData(mappedData);
-    } catch (error: any) {
-      console.error("Error fetching dashboard statistics:", error);
+      return mappedData;
+    });
 
-      const errorMessage = getErrorMessage(error);
-      setError(errorMessage);
-    } finally {
-      setLoading(false);
+    if (result) {
+      setCardData(result);
     }
   };
 
   const handleRetry = () => {
-    setRetryCount((prev) => prev + 1);
-    fetchData();
+    if (!isRefreshingToken) {
+      fetchData();
+    }
   };
 
   useEffect(() => {
@@ -231,9 +231,10 @@ const DashboardCards = () => {
                   icon={<ReloadOutlined />}
                   size="small"
                   onClick={handleRetry}
-                  loading={loading}
+                  loading={loading || isRefreshingToken}
+                  disabled={isRefreshingToken}
                 >
-                  Thử lại
+                  {isRefreshingToken ? "Đang làm mới..." : "Thử lại"}
                 </Button>
                 {retryCount > 0 && (
                   <Text type="secondary" style={{ fontSize: "12px" }}>
@@ -251,7 +252,7 @@ const DashboardCards = () => {
             borderRadius: "8px",
           }}
           closable
-          onClose={() => setError(null)}
+          onClose={clearError}
         />
       )}
 
