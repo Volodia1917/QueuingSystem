@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Flex, Typography, Alert, Card, Empty, Skeleton } from "antd";
-import { ReloadOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
+import { Typography, Card, Empty, Skeleton, Col, Drawer } from "antd";
 
 import { Icons } from "../Icons/Icons";
 import OverviewCalendar from "./Calendar";
@@ -9,8 +8,9 @@ import { UserPart } from "../User/UserPart";
 import { useApiWithRefresh } from "../../hooks/useApiWithRefresh";
 
 import { getStatisticOverallSummary } from "../../libraries/statistic";
+import { Errors } from "../Errors/Errors";
 
-const { Text, Title } = Typography;
+const { Title } = Typography;
 
 interface DetailItem {
   name: string;
@@ -55,25 +55,69 @@ const sortFieldsByOrder = (fields: string[]): string[] => {
   return [...knownFields, ...unknownFields];
 };
 
-export const OverviewRightSidebar = () => {
+const OverviewRightSidebar = () => {
+  return (
+    <div
+      style={{
+        background: "#fff",
+        padding: "16px",
+        borderRadius: "12px",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+        overflow: "auto",
+        width: "100%",
+        boxSizing: "border-box",
+        maxWidth: "100%",
+        maxHeight: "100%",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <HeaderOverview />
+
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+          width: "100%",
+        }}
+      >
+        <OverviewItems />
+      </div>
+
+      <div style={{ marginTop: "16px" }}>
+        <OverviewCalendar />
+      </div>
+    </div>
+  );
+};
+
+const HeaderOverview = () => {
+  return (
+    <>
+      <UserPart />
+
+      <div style={{ marginBottom: "16px" }}>
+        <Title level={4} style={{ color: "#FF7A00", margin: 0 }}>
+          Tổng quan
+        </Title>
+      </div>
+    </>
+  );
+};
+
+const OverviewItems = () => {
   const [overviewItems, setOverviewItems] = useState<OverviewItemData[]>([]);
-  const {
-    loading,
-    error,
-    isRefreshingToken,
-    executeWithRefresh,
-    clearError,
-    retryCount,
-  } = useApiWithRefresh();
+  const { loading, error, isRefreshingToken, executeWithRefresh, retryCount } =
+    useApiWithRefresh();
 
   const fetchData = async () => {
     const result = await executeWithRefresh(async () => {
       const response: OverallSummaryResponse =
         await getStatisticOverallSummary();
 
-      const fields = Object.keys(response).filter(
-        (key) => !key.startsWith("$")
-      );
+      const fields = Object.keys(response).filter((key) => !key.startsWith("$"));
 
       const sortedFields = sortFieldsByOrder(fields);
 
@@ -102,49 +146,7 @@ export const OverviewRightSidebar = () => {
     if (result) {
       setOverviewItems(result);
     } else {
-      // Set fallback data when API fails
-      setOverviewItems([
-        {
-          id: "devices",
-          percentage: 0,
-          totalValue: "0",
-          label: "Thiết bị",
-          chartColor: "#ff8c00",
-          backgroundColor: "#f0f0f0",
-          icon: <Icons.OverviewDevice />,
-          details: [
-            { name: "Đang hoạt động", value: "0", color: "#ff8c00" },
-            { name: "Ngừng hoạt động", value: "0", color: "#505050" },
-          ],
-        },
-        {
-          id: "services",
-          percentage: 0,
-          totalValue: "0",
-          label: "Dịch vụ",
-          chartColor: "#007bff",
-          backgroundColor: "#f0f0f0",
-          icon: <Icons.OverviewService />,
-          details: [
-            { name: "Đang hoạt động", value: "0", color: "#007bff" },
-            { name: "Ngừng hoạt động", value: "0", color: "#505050" },
-          ],
-        },
-        {
-          id: "numbers",
-          percentage: 0,
-          totalValue: "0",
-          label: "Cấp số",
-          chartColor: "#28a745",
-          backgroundColor: "#f0f0f0",
-          icon: <Icons.OverviewQueue />,
-          details: [
-            { name: "Đã sử dụng", value: "0", color: "#28a745" },
-            { name: "Đang chờ", value: "0", color: "#ffc107" },
-            { name: "Bỏ qua", value: "0", color: "#505050" },
-          ],
-        },
-      ]);
+      setOverviewItems([]);
     }
   };
 
@@ -158,132 +160,101 @@ export const OverviewRightSidebar = () => {
     fetchData();
   }, []);
 
-  const LoadingSkeleton = () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-      {[1, 2, 3].map((item) => (
-        <Card
-          key={item}
-          size="small"
-          style={{
-            borderRadius: "12px",
-            marginBottom: "8px",
-            height: "80px",
-          }}
-        >
-          <Skeleton
-            active
-            avatar={{ shape: "circle", size: 64 }}
-            paragraph={{ rows: 2 }}
-            title={false}
-          />
-        </Card>
-      ))}
-    </div>
-  );
-
   return (
-    <div
-      style={{
-        background: "#fff",
-        padding: "16px",
-        borderRadius: "12px",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-        overflow: "auto",
-        width: "100%",
-        boxSizing: "border-box",
-        maxWidth: "100%",
-        maxHeight: "100%",
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <UserPart />
-
-      <div style={{ marginBottom: "16px" }}>
-        <Title level={4} style={{ color: "#FF7A00", margin: 0 }}>
-          Tổng quan
-        </Title>
-      </div>
-
+    <>
       {error && (
-        <Alert
-          message="Lỗi tải dữ liệu"
-          description={
-            <Flex vertical gap="small">
-              <Text>{error}</Text>
-              <Flex gap="small">
-                <Button
-                  type="primary"
-                  icon={<ReloadOutlined />}
-                  size="small"
-                  onClick={handleRetry}
-                  loading={loading || isRefreshingToken}
-                  disabled={isRefreshingToken}
-                >
-                  {isRefreshingToken ? "Đang làm mới..." : "Thử lại"}
-                </Button>
-                {retryCount > 0 && (
-                  <Text type="secondary" style={{ fontSize: "12px" }}>
-                    Đã thử lại {retryCount} lần
-                  </Text>
-                )}
-              </Flex>
-            </Flex>
-          }
-          type="warning"
-          showIcon
-          icon={<ExclamationCircleOutlined />}
-          style={{
-            marginBottom: "16px",
-            borderRadius: "8px",
-          }}
-          closable
-          onClose={clearError}
+        <Errors
+          error={error}
+          onRetry={handleRetry}
+          loading={loading}
+          isRefreshingToken={isRefreshingToken}
+          retryCount={retryCount}
         />
       )}
+      {loading ? (
+        <LoadingSkeleton />
+      ) : overviewItems.length === 0 && !error ? (
+        <Empty
+          image={Empty.PRESENTED_IMAGE_SIMPLE}
+          description="Không có dữ liệu tổng quan"
+          style={{
+            padding: "20px 0",
+            background: "#fafafa",
+            borderRadius: "8px",
+          }}
+        />
+      ) : (
+        <>
+          {overviewItems.map((item) => (
+            <OverviewItem key={item.id} item={item} />
+          ))}
+        </>
+      )}
+    </>
+  );
+};
 
-      <div
+const LoadingSkeleton = () => (
+  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+    {[1, 2, 3].map((item) => (
+      <Card
+        key={item}
+        size="small"
         style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "8px",
-          width: "100%",
+          borderRadius: "12px",
+          marginBottom: "8px",
+          height: "80px",
         }}
       >
-        {loading ? (
-          <LoadingSkeleton />
-        ) : overviewItems.length === 0 && !error ? (
-          <Empty
-            image={Empty.PRESENTED_IMAGE_SIMPLE}
-            description="Không có dữ liệu tổng quan"
-            style={{
-              padding: "20px 0",
-              background: "#fafafa",
-              borderRadius: "8px",
-            }}
-          >
-            <Button
-              type="primary"
-              icon={<ReloadOutlined />}
-              onClick={handleRetry}
-              loading={loading || isRefreshingToken}
-              disabled={isRefreshingToken}
-            >
-              {isRefreshingToken ? "Đang làm mới..." : "Tải lại"}
-            </Button>
-          </Empty>
-        ) : (
-          overviewItems.map((item) => (
-            <OverviewItem key={item.id} item={item} />
-          ))
-        )}
-      </div>
+        <Skeleton
+          active
+          avatar={{ shape: "circle", size: 64 }}
+          paragraph={{ rows: 2 }}
+          title={false}
+        />
+      </Card>
+    ))}
+  </div>
+);
 
-      <div style={{ marginTop: "16px" }}>
-        <OverviewCalendar defaultDate={new Date(2021, 10, 19)} />
-        {/* <OverviewCalendar defaultDate={new Date()} /> */}
-      </div>
-    </div>
+export const RightSidebar = ({
+  isMobile,
+  onClose,
+  visible,
+}: {
+  isMobile: boolean;
+  onClose: () => void;
+  visible: boolean;
+}) => {
+  return (
+    <>
+      {isMobile ? (
+        <Drawer
+          title="Tổng quan"
+          placement="right"
+          onClose={onClose}
+          open={visible}
+          width={700}
+        >
+          <OverviewRightSidebar />
+        </Drawer>
+      ) : (
+        <Col
+          xs={0}
+          sm={0}
+          md={0}
+          lg={8}
+          xl={8}
+          style={{
+            width: "100%",
+            height: "100vh",
+            overflow: "hidden",
+            padding: 0,
+          }}
+        >
+          <OverviewRightSidebar />
+        </Col>
+      )}
+    </>
   );
 };

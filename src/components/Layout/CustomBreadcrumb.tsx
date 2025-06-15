@@ -121,7 +121,7 @@ export const CustomBreadcrumb: React.FC<CustomBreadcrumbProps> = ({
   return (
     <div
       style={{
-        padding: "16px 0",
+        padding: `${size === "small" ? "8px" : size === "medium" ? "12px" : "16px"} 0`,
         ...style,
       }}
       className={className}
