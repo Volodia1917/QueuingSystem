@@ -81,8 +81,8 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  width: 80px; /* hoặc 80px tùy ý */
-  height: 100px;
+  min-width: 60px !important;
+  height: 80px !important;
   color: #ff9138 !important;
   font-weight: 500;
   font-size: 16px;

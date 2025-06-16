@@ -5,8 +5,14 @@ import format from 'date-fns/format';
 import 'react-date-range/dist/styles.css'; // styles mặc định
 import 'react-date-range/dist/theme/default.css'; // theme mặc định
 import { DateRange, Range } from 'react-date-range';
+import type { AdminFilterRequest } from '../../../libraries/assignmentApi';
 
-const FilterPanel = () => {
+interface FilterPanelProps {
+  onFilterChange?: (filters: AdminFilterRequest) => void;
+  services?: Array<{ serviceCode: string; serviceName: string }>;
+}
+
+const FilterPanel: React.FC<FilterPanelProps> = ({ onFilterChange, services = [] }) => {
   const [showCalendar, setShowCalendar] = useState(false);
   const [range, setRange] = useState<Range[]>([
     {
@@ -15,10 +21,20 @@ const FilterPanel = () => {
       key: 'selection',
     },
   ]);
-  // const today = new Date().toISOString().split('T')[0];
+  const [filters, setFilters] = useState<AdminFilterRequest>({});
+  const [keywordInput, setKeywordInput] = useState<string>('');
 
   const calendarRef = useRef<HTMLDivElement | null>(null);
 
+  // Debounce keyword input
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const value = keywordInput.trim() || undefined;
+      updateFilters({ keyword: value });
+    }, 500); // 500ms delay
+
+    return () => clearTimeout(timer);
+  }, [keywordInput]);
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -40,18 +56,71 @@ const FilterPanel = () => {
     };
   }, [showCalendar]);
 
+  // Update filters and notify parent
+  const updateFilters = (newFilters: Partial<AdminFilterRequest>) => {
+    const updatedFilters = { ...filters, ...newFilters };
+    setFilters(updatedFilters);
+    onFilterChange?.(updatedFilters);
+  };
+
+  const handleServiceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value === 'all' ? undefined : e.target.value;
+    updateFilters({ serviceCode: value });
+  };
+
+  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    let status: number | undefined;
+    switch (value) {
+      case 'waiting':
+        status = 1;
+        break;
+      case 'used':
+        status = 2;
+        break;
+      case 'skipped':
+        status = 3;
+        break;
+      default:
+        status = undefined;
+    }
+    updateFilters({ status });
+  };
+
+  const handleSourceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value === 'all' ? undefined : e.target.value;
+    updateFilters({ source: value });
+  };
+
+  const handleDateRangeChange = (item: any) => {
+    const newRange = [item.selection];
+    setRange(newRange);
+
+    const startDate = item.selection.startDate ? item.selection.startDate.toISOString() : undefined;
+    const endDate = item.selection.endDate ? item.selection.endDate.toISOString() : undefined;
+
+    updateFilters({
+      startDate,
+      endDate
+    });
+  };
+  const handleKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setKeywordInput(e.target.value);
+  };
+
 
   return (
-    <div className={styles.filterPanel}>
-      {/* Tên dịch vụ */}
+    <div className={styles.filterPanel}>      {/* Tên dịch vụ */}
       <div className={styles.filterItem}>
         <label>Tên dịch vụ</label>
         <div className={styles.customSelect}>
-          <select>
-            <option>Tất cả</option>
-            <option>Khám sản - Phụ khoa</option>
-            <option>Khám tai mũi họng</option>
-            <option>Khám răng hàm mặt</option>
+          <select onChange={handleServiceChange} value={filters.serviceCode || 'all'}>
+            <option value="all">Tất cả</option>
+            {services.map((service) => (
+              <option key={service.serviceCode} value={service.serviceCode}>
+                {service.serviceName}
+              </option>
+            ))}
           </select>
           <i className="bx bx-caret-down"></i>
         </div>
@@ -61,11 +130,15 @@ const FilterPanel = () => {
       <div className={styles.filterItem}>
         <label>Tình trạng</label>
         <div className={styles.customSelect}>
-          <select>
-            <option>Tất cả</option>
-            <option>Đang chờ</option>
-            <option>Đã sử dụng</option>
-            <option>Bỏ qua</option>
+          <select onChange={handleStatusChange} value={
+            filters.status === 1 ? 'waiting' :
+              filters.status === 2 ? 'used' :
+                filters.status === 3 ? 'skipped' : 'all'
+          }>
+            <option value="all">Tất cả</option>
+            <option value="waiting">Đang chờ</option>
+            <option value="used">Đã sử dụng</option>
+            <option value="skipped">Bỏ qua</option>
           </select>
           <i className="bx bx-caret-down"></i>
         </div>
@@ -75,10 +148,10 @@ const FilterPanel = () => {
       <div className={styles.filterItem}>
         <label>Nguồn cấp</label>
         <div className={styles.customSelect}>
-          <select>
-            <option>Tất cả</option>
-            <option>Kiosk</option>
-            <option>Hệ thống</option>
+          <select onChange={handleSourceChange} value={filters.source || 'all'}>
+            <option value="all">Tất cả</option>
+            <option value="Kiosk">Kiosk</option>
+            <option value="System">Hệ thống</option>
           </select>
           <i className="bx bx-caret-down"></i>
         </div>
@@ -107,15 +180,11 @@ const FilterPanel = () => {
               {range[0].endDate ? format(range[0].endDate, 'dd/MM/yyyy') : ''}
             </span>
           </div>
-        </div>
-
-        {showCalendar && (
+        </div>        {showCalendar && (
           <div className={styles.calendarDropdown} ref={calendarRef}>
             <DateRange
               editableDateInputs={true}
-              onChange={(item) => {
-                setRange([item.selection]);                
-              }}
+              onChange={handleDateRangeChange}
               moveRangeOnFirstSelection={false}
               ranges={range}
               months={1}
@@ -129,8 +198,12 @@ const FilterPanel = () => {
       {/* Từ khóa */}
       <div className={styles.filterItem}>
         <label>Từ khoá</label>
-        <div className={styles.searchBox}>
-          <input type="text" placeholder="Nhập từ khóa" />
+        <div className={styles.searchBox}>          <input
+          type="text"
+          placeholder="Nhập từ khóa"
+          onChange={handleKeywordChange}
+          value={keywordInput}
+        />
           <Search size={18} color="#FF7506" className={styles.rightIcon} />
         </div>
       </div>

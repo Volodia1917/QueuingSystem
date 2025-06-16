@@ -1,130 +1,66 @@
 import React, { useState } from "react";
 import CapSoRow from "../CapSoRow/CapSoRow.view";
 import styles from "./CapSoTable.module.css";
-import type { CapSo } from "../../types/CapSo.type";
+import type { AdminFilterAssignment } from "../../../libraries/assignmentApi";
 import CapSoDetail from "../CapSoDetail/CapSoDetail.view";
+import { Pagination } from "antd";
 
 
 interface CapSoTableProps {
-  data?: CapSo[];
-  onSelectDetail: (capSo: CapSo) => void;
+  data?: AdminFilterAssignment[];
+  loading?: boolean;
+  onSelectDetail: (capSo: AdminFilterAssignment) => void;
+  // Pagination props
+  currentPage?: number;
+  totalItems?: number;
+  pageSize?: number;
+  onPageChange?: (page: number, size?: number) => void;
 }
 
-const CapSoTable: React.FC <CapSoTableProps> = ({ data: propData, onSelectDetail: propOnSelect }) => {
-  const data: CapSo[] = [
-    {
-    id: '1',
-    stt: '2010001',
-    name: 'Lê Huỳnh Ái Vân',
-    service: 'Khám tim mạch',
-    timeIssued: '14:35 - 07/11/2021',
-    expiry: '14:35 - 12/11/2021',
-    status: 'Đang chờ',
-    source: 'Kiosk',
-    fullName: "Nguyễn Văn A",
-    issueTime: "10:00 - 01/01/2024",
-    expiryTime: "18:00 - 01/01/2024",
-    issuer: "Admin",
-    phone: "0909090909",
-    email: "a@example.com",
-  },
-  {
-    id: '2',
-    stt: '2010002',
-    name: 'Huỳnh Ái Vân',
-    service: 'Khám sản - Phụ Khoa',
-    timeIssued: '14:35 - 07/11/2021',
-    expiry: '14:35 - 12/11/2021',
-    status: 'Đã sử dụng',
-    source: 'Kiosk',
-  },
-  {
-    id: '3',
-    stt: '2010003',
-    name: 'Lê Ái Vân',
-    service: 'Khám răng hàm mặt',
-    timeIssued: '14:35 - 07/11/2021',
-    expiry: '14:35 - 12/11/2021',
-    status: 'Đang chờ',
-    source: 'Hệ thống',
-  },
-  {
-    id: '4',
-    stt: '2010004',
-    name: 'Nguyễn Ái Vân',
-    service: 'Khám tai mũi họng',
-    timeIssued: '14:35 - 07/11/2021',
-    expiry: '14:35 - 12/11/2021',
-    status: 'Đang chờ',
-    source: 'Hệ thống',
-  },
-  {
-    id: '5',
-    stt: '2010005',
-    name: 'Trần Thị Ái Vân',
-    service: 'Khám hô hấp',
-    timeIssued: '14:35 - 07/11/2021',
-    expiry: '14:35 - 12/11/2021',
-    status: 'Đang chờ',
-    source: 'Kiosk',
-  },
-  {
-    id: '6',
-    stt: '2010006',
-    name: 'Lê Huỳnh Nghĩa',
-    service: 'Khám tổng quát',
-    timeIssued: '14:35 - 07/11/2021',
-    expiry: '14:35 - 12/11/2021',
-    status: 'Đã sử dụng',
-    source: 'Hệ thống',
-  },
-  {
-    id: '7',
-    stt: '2010007',
-    name: 'Lê Huỳnh Đức',
-    service: 'Khám tai mũi họng',
-    timeIssued: '14:35 - 07/11/2021',
-    expiry: '14:35 - 12/11/2021',
-    status: 'Bỏ qua',
-    source: 'Kiosk',
-  },
-  // {
-  //   id: '8',
-  //   stt: '2010008',
-  //   name: 'Phạm Văn Mạnh',
-  //   service: 'Khám tổng quát',
-  //   timeIssued: '14:35 - 07/11/2021',
-  //   expiry: '14:35 - 12/11/2021',
-  //   status: 'Bỏ qua',
-  //   source: 'Hệ thống',
-  // },
-  // {
-  //   id: '9',
-  //   stt: '2010009',
-  //   name: 'Lê Thị Cẩm Tiên',
-  //   service: 'Khám tai mũi họng',
-  //   timeIssued: '14:35 - 07/11/2021',
-  //   expiry: '14:35 - 12/11/2021',
-  //   status: 'Đã sử dụng',
-  //   source: 'Hệ thống',
-  // },
-    // Thêm dữ liệu nếu muốn
-  ];
+const CapSoTable: React.FC<CapSoTableProps> = ({
+  data: propData,
+  loading = false,
+  onSelectDetail: propOnSelect,
+  currentPage = 1,
+  totalItems = 0,
+  pageSize = 10,
+  onPageChange
+}) => {
+  // Use the data from props or empty array if no data
+  const data: AdminFilterAssignment[] = propData || [];
 
-  // State lưu bản ghi được chọn để hiện chi tiết
-  const [selectedCapSo, setSelectedCapSo] = useState<CapSo | null>(null);
+  const [selectedCapSo, setSelectedCapSo] = useState<AdminFilterAssignment | null>(null);
 
-  // Hàm xử lý chọn bản ghi
-  const handleSelectDetail = (capSo: CapSo) => {
+  const handleSelectDetail = (capSo: AdminFilterAssignment) => {
     setSelectedCapSo(capSo);
     if (propOnSelect) {
       propOnSelect(capSo);
     }
-  };
-
-  return (
+  }; return (
     <div className={styles.wrapper}>
-      <CapSoRow data={data} onSelectDetail={handleSelectDetail} />
+      <div className={styles.tableContainer}>
+        <CapSoRow
+          data={data}
+          loading={loading}
+          onSelectDetail={handleSelectDetail}
+        />
+      </div>
+
+      {/* Pagination inside table */}
+      {onPageChange && (
+        <div className={styles.paginationWrapper}>
+          <Pagination
+            current={currentPage}
+            align="end"
+            total={totalItems}
+            pageSize={pageSize}
+            showSizeChanger
+            showTotal={(total, range) => `${range[0]}-${range[1]} của ${total} mục`}
+            onChange={onPageChange}
+          />
+        </div>
+      )}
+
       {selectedCapSo && (
         <CapSoDetail capSo={selectedCapSo} onBack={() => setSelectedCapSo(null)} />
       )}
