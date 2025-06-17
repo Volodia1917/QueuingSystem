@@ -9,6 +9,7 @@ import ServicePage from "./pages/service";
 import CapSoList from "./pages/capso/CapSoList.view";
 import AccountList from "./pages/account/AccountList.view";
 import Login from "./pages/login/Login.view";
+import DoctorPage from "./pages/doctor";
 
 import {
   getUserRole,
@@ -57,6 +58,8 @@ function App() {
         return <ServicePage />;
       case MENU_KEYS.CAP_SO:
         return <CapSoList />;
+      case MENU_KEYS.DOCTOR_PAGE:
+        return <DoctorPage />;
       case MENU_KEYS.ACCOUNT_MANAGEMENT:
         return <AccountList />;
       default:

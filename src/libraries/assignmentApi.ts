@@ -125,6 +125,22 @@ export const serviceApi = {
 };
 
 export const assignmentApi = {
+  // Test API call for byrole endpoint
+  getByRole: async (): Promise<any> => {
+    const response = await fetch(`${ASSIGNMENT_API_URL}/byrole`, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${getToken()}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to get assignments by role: ${response.statusText}`);
+    }
+
+    return response.json();
+  },
+
   // Tạo số mới
   generate: async (request: GenerateAssignmentRequest): Promise<GenerateAssignmentResponse> => {
     const response = await fetch(`${ASSIGNMENT_API_URL}/generate`, {
@@ -143,6 +159,36 @@ export const assignmentApi = {
     return response.json();
   },
   
+  // Cập nhật trạng thái assignment thành "Đã sử dụng"
+  toProcessing: async (code: string): Promise<void> => {
+    
+    const response = await fetch(`${ASSIGNMENT_API_URL}/to-processing?code=${encodeURIComponent(code)}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${getToken()}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to update assignment to processing: ${response.statusText}`);
+    }
+  },
+
+  // Cập nhật trạng thái assignment thành "Bỏ qua"
+  toNext: async (code: string): Promise<void> => {
+    const response = await fetch(`${ASSIGNMENT_API_URL}/to-next?code=${encodeURIComponent(code)}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${getToken()}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to update assignment to next: ${response.statusText}`);
+    }
+  },
 
   // Lấy danh sách cấp số cho admin với filter
   adminFilter: async (request: AdminFilterRequest = {}): Promise<AdminFilterResponse> => {

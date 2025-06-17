@@ -28,7 +28,7 @@ export const checkMenuAccess = (
 ): boolean => {
   switch (userRole) {
     case "Doctor":
-      return menuKey === MENU_KEYS.CAP_SO;
+      return menuKey === MENU_KEYS.DOCTOR_PAGE;
 
     case "Staff":
       return menuKey !== MENU_KEYS.ACCOUNT_MANAGEMENT;
@@ -43,7 +43,7 @@ export const checkMenuAccess = (
 export const getDefaultMenuForRole = (userRole: UserRole): MenuKey => {
   switch (userRole) {
     case "Doctor":
-      return MENU_KEYS.CAP_SO;
+      return MENU_KEYS.DOCTOR_PAGE;
     default:
       return MENU_KEYS.DASHBOARD;
   }

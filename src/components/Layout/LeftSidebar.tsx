@@ -50,6 +50,7 @@ const LeftSidebar = (props: {
       getItem("Thiết bị", MENU_KEYS.DEVICE, <LeftSidebarIcons.Monitor />),
       getItem("Dịch vụ", MENU_KEYS.SERVICE, <LeftSidebarIcons.Service />),
       getItem("Cấp số", MENU_KEYS.CAP_SO, <LeftSidebarIcons.TicketProvider />),
+      // getItem("Xin chào", MENU_KEYS.DOCTOR_PAGE, <LeftSidebarIcons.TicketProvider />),
       getItem(
         "Cài đặt hệ thống",
         MENU_KEYS.SYSTEM_SETTINGS,
@@ -125,7 +126,7 @@ const LeftSidebar = (props: {
           <Menu
             mode="inline"
             defaultSelectedKeys={
-              userRole === "Doctor" ? [MENU_KEYS.CAP_SO] : [MENU_KEYS.DASHBOARD]
+              userRole === "Doctor" ? [MENU_KEYS.DOCTOR_PAGE] : [MENU_KEYS.DASHBOARD]
             }
             selectedKeys={[selectedKey]}
             openKeys={openKeys}

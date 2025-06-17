@@ -3,6 +3,7 @@ export const MENU_KEYS = {
   DEVICE: "device",
   SERVICE: "service",
   CAP_SO: "cap-so",
+  DOCTOR_PAGE: "doctor-page",
   SYSTEM_SETTINGS: "system-settings",
   ROLE_MANAGEMENT: "role-management",
   ACCOUNT_MANAGEMENT: "account-management",
