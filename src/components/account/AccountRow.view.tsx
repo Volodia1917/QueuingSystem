@@ -30,8 +30,8 @@ const AccountRow: React.FC<AccountRowProps> = ({ data, onSelectDetail }) => {
   },
   {
     title: "Số điện thoại",
-    dataIndex: "phone",
-    key: "phone",
+    dataIndex: "telephone",
+    key: "telephone",
     align: "left" as const,
     className: styles.cell,
   },
@@ -44,8 +44,8 @@ const AccountRow: React.FC<AccountRowProps> = ({ data, onSelectDetail }) => {
   },
   {
     title: "Vai trò",
-    dataIndex: "role",
-    key: "role",
+    dataIndex: "userRole",
+    key: "userRole",
     align: "left" as const,
     className: styles.cell,
   },
@@ -91,8 +91,19 @@ const AccountRow: React.FC<AccountRowProps> = ({ data, onSelectDetail }) => {
 
 
   return (
+      // <Table
+      //   dataSource={data}
+      //   columns={columns}
+      //   rowKey="id"
+      //   pagination={false}
+      //   bordered
+      //   className={styles.table}
+      //   rowClassName={(_, index) =>
+      //     index % 2 === 0 ? styles.evenRow : styles.oddRow
+      //   }
+      // />
       <Table
-        dataSource={data}
+        dataSource={Array.isArray(data) ? data : []}
         columns={columns}
         rowKey="id"
         pagination={false}

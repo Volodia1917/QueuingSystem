@@ -18,15 +18,15 @@ const AccountList: React.FC = () => {
 
     const [accountData, setAccountData] = useState<Account[]>([
     {
-      id: "1",
-      username: "tuyetnguyen@12",
-      fullName: "Nguyen Văn A",
-      phone: "0919256712",
-      email: "tuyetnguyen123@gmail.com",
-      role: "Kế toán",
-      status: "Hoạt động",
-      password: "12345678",
-      confirmPassword: "12345678",
+      id: "",
+      username: "",
+      fullName: "",
+      telephone: "",
+      email: "",
+      userRole: "",
+      status: "",
+      password: "",
+      confirmPassword: "",
     },
     // các item khác
   ]);
@@ -42,9 +42,9 @@ const AccountList: React.FC = () => {
     setSelectedAccount(null); // Quay lại danh sách sau khi cập nhật
   };
 
-  const handleRoleChange = (role: string) => {
+  const handleRoleChange = (userRole: string) => {
     if (selectedAccount) {
-      setSelectedAccount({ ...selectedAccount, role });
+      setSelectedAccount({ ...selectedAccount, userRole });
     }
   };
 

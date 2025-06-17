@@ -1,6 +1,7 @@
 import React from "react";
-import { Button, Form, Input, Select } from "antd";
+import { Button, Form, Input, Select, message } from "antd";
 import styles from "./AddAccount.module.css";
+import {createAccount} from "../../../libraries/Account/accountApi"
 
 const { Option } = Select;
 
@@ -12,9 +13,16 @@ interface AddAccountProps {
 const AddAccount: React.FC<AddAccountProps> = ({ onCancel, onAdd }) => {
   const [form] = Form.useForm();
 
-  const handleFinish = (values: any) => {
-    onAdd(values);
-    form.resetFields(); // reset form sau khi thêm
+  const handleFinish = async (values: any) => {
+    try {
+      await createAccount(values); // ✅ Gọi API tạo tài khoản
+      message.success("Thêm tài khoản thành công!"); // ✅ Thông báo
+      onAdd(values); // callback về cha để cập nhật UI
+      form.resetFields(); // reset form
+    } catch (error) {
+      console.error("Thêm tài khoản thất bại:", error);
+      message.error("Lỗi khi thêm tài khoản!");
+    }
   };
 
   return (

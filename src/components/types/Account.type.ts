@@ -1,11 +1,17 @@
 export interface Account {
   id: string;
-  username: string;
-  fullName: string;
-  phone: string;
   email: string;
-  role: string;
-  status: string;
+  fullName: string;
+  telephone: string;
+  userRole: string;
+  createdDate?: string;
+
+  username?: string;
+  // fullName: string;
+  // phone: string;
+  // email: string;
+  // role: string;
+  status?: string;
 
   password?: string; // thêm nếu cần dùng
   confirmPassword?: string; // thêm nếu cần dùng

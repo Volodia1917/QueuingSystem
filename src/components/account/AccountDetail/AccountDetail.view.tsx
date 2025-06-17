@@ -50,7 +50,7 @@ const AccountDetail: React.FC<AccountDetailProps> = ({
 
             <Form.Item
               label="Số điện thoại:"
-              name="phone"
+              name="telephone"
               rules={[{ required: true, message: "Vui lòng nhập số điện thoại" }]}
             >
               <Input placeholder="Nhập số điện thoại" />
@@ -66,12 +66,12 @@ const AccountDetail: React.FC<AccountDetailProps> = ({
 
             <Form.Item
               label="Vai trò:"
-              name="role"
+              name="userRole"
               rules={[{ required: true, message: "Vui lòng chọn vai trò" }]}
             >
               <Select placeholder="Chọn vai trò">
-                <Option value="Kế toán">Kế toán</Option>
-                <Option value="Quản lý">Quản lý</Option>
+                <Option value="Nhân viên">Nhân viên</Option>
+                <Option value="Bác sĩ">Bác sĩ</Option>
                 <Option value="Admin">Admin</Option>
               </Select>
             </Form.Item>

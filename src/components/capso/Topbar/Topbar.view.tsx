@@ -1,7 +1,7 @@
 // components/capso/Topbar.view.tsx
 import React from 'react';
 import styles from './Topbar.module.css';
-import { Bell } from 'lucide-react';
+import {UserPart} from "../../User/UserPart"
 
 const Topbar = () => {
   return (
@@ -13,17 +13,8 @@ const Topbar = () => {
       </div>
 
       <div className={styles.rightSection}>
-        <Bell size={20} className={styles.bellIcon} />
         <div className={styles.userInfo}>
-          <img
-            src="/images/user.jpg" // Đổi thành ảnh thật nếu có
-            alt="avatar"
-            className={styles.avatar}
-          />
-          <div>
-            <p className={styles.greeting}>Xin chào</p>
-            <p className={styles.username}>Lê Quỳnh Ái Vân</p>
-          </div>
+          <UserPart />
         </div>
       </div>
     </div>
