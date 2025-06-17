@@ -198,7 +198,6 @@ export const OverviewRightSidebar = () => {
         flexDirection: "column",
       }}
     >
-      <UserPart />
 
       <div style={{ marginBottom: "16px" }}>
         <Title level={4} style={{ color: "#FF7A00", margin: 0 }}>
