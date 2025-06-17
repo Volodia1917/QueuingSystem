@@ -1,19 +1,5 @@
-import {
-  Card,
-  Select,
-  Space,
-  Typography,
-  Spin,
-  Alert,
-  Button,
-  DatePicker,
-  Empty,
-} from "antd";
-import {
-  ReloadOutlined,
-  ExclamationCircleOutlined,
-  CalendarOutlined,
-} from "@ant-design/icons";
+import { Card, Select, Space, Typography, Spin, DatePicker, Empty } from "antd";
+import { CalendarOutlined } from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import {
   AreaChart,
@@ -29,6 +15,7 @@ import dayjs from "dayjs";
 
 import { getStatisticChartData } from "../../libraries/statistic";
 import { getErrorMessage } from "../../libraries/useApi";
+import { Errors } from "../Errors/Errors";
 
 const { Title, Text } = Typography;
 const { Option } = Select;
@@ -50,31 +37,6 @@ interface ChartDataResponse {
   $id: string;
   $values: ChartDataItem[];
 }
-
-const CustomTooltip = ({ active, payload }: any) => {
-  if (active && payload && payload.length) {
-    const dataPoint = payload[0].payload;
-
-    if (dataPoint.isHighest) {
-      return (
-        <div
-          style={{
-            backgroundColor: "#4277FF",
-            color: "white",
-            padding: "8px 12px",
-            borderRadius: "8px",
-            fontSize: "14px",
-            fontWeight: "bold",
-          }}
-        >
-          {dataPoint.value.toLocaleString("vi-VN")}
-        </div>
-      );
-    }
-  }
-
-  return null;
-};
 
 type PeriodType = "day" | "week" | "month" | "year";
 
@@ -180,11 +142,11 @@ export const AnalysisChart = () => {
 
     switch (period) {
       case "day":
-        return `30 ngày gần nhất`;
+        return `30 ngày trong tháng`;
       case "week":
-        return `4 tuần gần nhất`;
+        return `4 tuần trong tháng`;
       case "month":
-        return `12 tháng gần nhất`;
+        return `12 tháng trong năm`;
       case "year":
         return `5 năm gần nhất`;
       default:
@@ -216,7 +178,6 @@ export const AnalysisChart = () => {
           </Title>
           <Text type="secondary">{getDateRangeText()}</Text>
         </div>
-
         <div
           style={{
             display: "flex",
@@ -225,80 +186,23 @@ export const AnalysisChart = () => {
             alignItems: "flex-end",
           }}
         >
-          <Space size="large" wrap>
-            <Space>
-              <Text>Chọn tháng</Text>
-              <DatePicker
-                value={selectedMonth}
-                onChange={handleMonthChange}
-                picker="month"
-                format="MM/YYYY"
-                placeholder="Chọn tháng"
-                style={{ width: 160 }}
-                disabled={loading}
-                allowClear
-                suffixIcon={<CalendarOutlined />}
-              />
-            </Space>
-
-            <Space>
-              <Text>Xem theo</Text>
-              <Select
-                value={period}
-                style={{ width: 120 }}
-                onChange={handlePeriodChange}
-                loading={loading}
-              >
-                {PERIOD_OPTIONS.map((option) => (
-                  <Option key={option.value} value={option.value}>
-                    {option.label}
-                  </Option>
-                ))}
-              </Select>
-            </Space>
-          </Space>
-
-          {useCustomMonth && (
-            <Text type="secondary" style={{ fontSize: "12px" }}>
-              Sử dụng tháng tùy chỉnh
-            </Text>
-          )}
+          <SelectOption
+            selectedMonth={selectedMonth}
+            handleMonthChange={handleMonthChange}
+            loading={loading}
+            period={period}
+            handlePeriodChange={handlePeriodChange}
+          />
         </div>
       </div>
 
       {error && (
-        <Alert
-          message="Lỗi tải dữ liệu biểu đồ"
-          description={
-            <Space direction="vertical" size="small" style={{ width: "100%" }}>
-              <Text>{error}</Text>
-              <Space>
-                <Button
-                  type="primary"
-                  icon={<ReloadOutlined />}
-                  size="small"
-                  onClick={handleRetry}
-                  loading={loading}
-                >
-                  Thử lại
-                </Button>
-                {retryCount > 0 && (
-                  <Text type="secondary" style={{ fontSize: "12px" }}>
-                    Đã thử lại {retryCount} lần
-                  </Text>
-                )}
-              </Space>
-            </Space>
-          }
-          type="warning"
-          showIcon
-          icon={<ExclamationCircleOutlined />}
-          style={{
-            marginBottom: "16px",
-            borderRadius: "8px",
-          }}
-          closable
-          onClose={() => setError(null)}
+        <Errors
+          error={error}
+          onRetry={handleRetry}
+          loading={loading}
+          isRefreshingToken={false}
+          retryCount={retryCount}
         />
       )}
 
@@ -326,76 +230,160 @@ export const AnalysisChart = () => {
             background: "#fafafa",
             borderRadius: "8px",
           }}
-        >
-          <Button
-            type="primary"
-            icon={<ReloadOutlined />}
-            onClick={handleRetry}
-          >
-            Tải lại
-          </Button>
-        </Empty>
+        />
       ) : (
         <div style={{ height: "300px", width: "100%" }}>
-          <ResponsiveContainer>
-            <AreaChart
-              data={data}
-              margin={{
-                top: 20,
-                right: 30,
-                left: 20,
-                bottom: 20,
-              }}
-            >
-              <defs>
-                <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#CFE0FF" stopOpacity={0.8} />
-                  <stop offset="95%" stopColor="#CFE0FF" stopOpacity={0.2} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} />
-              <XAxis
-                dataKey="name"
-                axisLine={false}
-                tickLine={false}
-                tickMargin={10}
-                tick={{ fontSize: 12 }}
-                tickFormatter={(value) => value}
-              />
-              <YAxis
-                axisLine={false}
-                tickLine={false}
-                tickCount={6}
-                domain={[0, yAxisMax]}
-                tick={{ fontSize: 12 }}
-                tickFormatter={(value) => value.toLocaleString("vi-VN")}
-              />
-              <Tooltip content={<CustomTooltip />} />
-              {highestPoint && (
-                <ReferenceLine
-                  x={highestPoint.name}
-                  stroke="#4277FF"
-                  strokeDasharray="3 3"
-                  strokeWidth={1}
-                />
-              )}
-              <Area
-                type="monotone"
-                dataKey="value"
-                stroke="#4277FF"
-                fill="url(#colorValue)"
-                strokeWidth={2}
-                activeDot={{
-                  r: 6,
-                  fill: "white",
-                  stroke: "#4277FF",
-                  strokeWidth: 2,
-                }}
-              />
-            </AreaChart>
-          </ResponsiveContainer>
+          <Chart data={data} yAxisMax={yAxisMax} highestPoint={highestPoint} />
         </div>
       )}
     </Card>
   );
+};
+
+const SelectOption = ({
+  selectedMonth,
+  handleMonthChange,
+  loading,
+  period,
+  handlePeriodChange,
+}: {
+  selectedMonth: dayjs.Dayjs | null;
+  handleMonthChange: (month: dayjs.Dayjs | null) => void;
+  loading: boolean;
+  period: PeriodType;
+  handlePeriodChange: (value: PeriodType) => void;
+}) => {
+  return (
+    <Space size="large" wrap>
+      {period === "week" && (
+        <Space>
+          <Text>Chọn tháng</Text>
+          <DatePicker
+            value={selectedMonth}
+            onChange={handleMonthChange}
+            picker="month"
+            format="MM/YYYY"
+            placeholder="Chọn tháng"
+            style={{ width: 160 }}
+            disabled={loading}
+            allowClear
+            suffixIcon={<CalendarOutlined />}
+          />
+        </Space>
+      )}
+
+      <Space>
+        <Text>Xem theo</Text>
+        <Select
+          value={period}
+          style={{ width: 120 }}
+          onChange={handlePeriodChange}
+          loading={loading}
+        >
+          {PERIOD_OPTIONS.map((option) => (
+            <Option key={option.value} value={option.value}>
+              {option.label}
+            </Option>
+          ))}
+        </Select>
+      </Space>
+    </Space>
+  );
+};
+
+const Chart = ({
+  data,
+  yAxisMax,
+  highestPoint,
+}: {
+  data: StatisticData[];
+  yAxisMax: number;
+  highestPoint: StatisticData | undefined;
+}) => {
+  return (
+    <>
+      <ResponsiveContainer>
+        <AreaChart
+          data={data}
+          margin={{
+            top: 20,
+            right: 30,
+            left: 20,
+            bottom: 20,
+          }}
+        >
+          <defs>
+            <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#CFE0FF" stopOpacity={0.8} />
+              <stop offset="95%" stopColor="#CFE0FF" stopOpacity={0.2} />
+            </linearGradient>
+          </defs>
+          <CartesianGrid strokeDasharray="3 3" vertical={false} />
+          <XAxis
+            dataKey="name"
+            axisLine={false}
+            tickLine={false}
+            tickMargin={10}
+            tick={{ fontSize: 12 }}
+            tickFormatter={(value) => value}
+          />
+          <YAxis
+            axisLine={false}
+            tickLine={false}
+            tickCount={6}
+            domain={[0, yAxisMax]}
+            tick={{ fontSize: 12 }}
+            tickFormatter={(value) => value.toLocaleString("vi-VN")}
+          />
+          <Tooltip content={<CustomTooltip />} />
+          {highestPoint && (
+            <ReferenceLine
+              x={highestPoint.name}
+              stroke="#4277FF"
+              strokeDasharray="3 3"
+              strokeWidth={1}
+            />
+          )}
+          <Area
+            type="monotone"
+            dataKey="value"
+            stroke="#4277FF"
+            fill="url(#colorValue)"
+            strokeWidth={2}
+            activeDot={{
+              r: 6,
+              fill: "white",
+              stroke: "#4277FF",
+              strokeWidth: 2,
+            }}
+          />
+        </AreaChart>
+      </ResponsiveContainer>
+    </>
+  );
+};
+
+const CustomTooltip = ({ active, payload }: any) => {
+  if (active && payload && payload.length) {
+    const dataPoint = payload[0].payload;
+
+    if (dataPoint.isHighest) {
+      return (
+        <div
+          style={{
+            backgroundColor: "#4277FF",
+            color: "white",
+            padding: "8px 12px",
+            borderRadius: "8px",
+            fontSize: "14px",
+            fontWeight: "bold",
+          }}
+        >
+          {dataPoint.value.toLocaleString("vi-VN")}
+        </div>
+      );
+    }
+  }
+
+  return null;
 };

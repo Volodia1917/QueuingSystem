@@ -1,9 +1,8 @@
-import { Row, Col, Card, Typography, Space, Alert, Button, Empty } from "antd";
+import { Row, Col, Card, Typography, Space, Button, Empty } from "antd";
 import {
   ArrowUpOutlined,
   ArrowDownOutlined,
   ReloadOutlined,
-  ExclamationCircleOutlined,
 } from "@ant-design/icons";
 import { ReactNode, useEffect, useState } from "react";
 
@@ -11,6 +10,7 @@ import { Icons } from "../Icons/Icons";
 import { useApiWithRefresh } from "../../hooks/useApiWithRefresh";
 
 import { getStatisticNumbersOverview } from "../../libraries/statistic";
+import { Errors } from "../Errors/Errors";
 
 const { Text } = Typography;
 
@@ -154,23 +154,15 @@ const sortFieldsByOrder = (fields: string[]): string[] => {
 
 const DashboardCards = () => {
   const [cardData, setCardData] = useState<CardData[]>([]);
-  const {
-    loading,
-    error,
-    isRefreshingToken,
-    executeWithRefresh,
-    clearError,
-    retryCount,
-  } = useApiWithRefresh();
+  const { loading, error, isRefreshingToken, executeWithRefresh, retryCount } =
+    useApiWithRefresh();
 
   const fetchData = async () => {
     const result = await executeWithRefresh(async () => {
       const response: StatisticResponse = await getStatisticNumbersOverview();
 
       // Get all fields from response (excluding $id fields)
-      const fields = Object.keys(response).filter(
-        (key) => !key.startsWith("$")
-      );
+      const fields = Object.keys(response).filter((key) => !key.startsWith("$"));
 
       // Sort fields based on predefined order
       const sortedFields = sortFieldsByOrder(fields);
@@ -220,39 +212,12 @@ const DashboardCards = () => {
   return (
     <>
       {error && (
-        <Alert
-          message="Lỗi tải dữ liệu"
-          description={
-            <Space direction="vertical" size="small" style={{ width: "100%" }}>
-              <Text>{error}</Text>
-              <Space>
-                <Button
-                  type="primary"
-                  icon={<ReloadOutlined />}
-                  size="small"
-                  onClick={handleRetry}
-                  loading={loading || isRefreshingToken}
-                  disabled={isRefreshingToken}
-                >
-                  {isRefreshingToken ? "Đang làm mới..." : "Thử lại"}
-                </Button>
-                {retryCount > 0 && (
-                  <Text type="secondary" style={{ fontSize: "12px" }}>
-                    Đã thử lại {retryCount} lần
-                  </Text>
-                )}
-              </Space>
-            </Space>
-          }
-          type="warning"
-          showIcon
-          icon={<ExclamationCircleOutlined />}
-          style={{
-            marginBottom: "16px",
-            borderRadius: "8px",
-          }}
-          closable
-          onClose={clearError}
+        <Errors
+          error={error}
+          onRetry={handleRetry}
+          loading={loading}
+          isRefreshingToken={false}
+          retryCount={retryCount}
         />
       )}
 
@@ -266,11 +231,7 @@ const DashboardCards = () => {
             borderRadius: "8px",
           }}
         >
-          <Button
-            type="primary"
-            icon={<ReloadOutlined />}
-            onClick={handleRetry}
-          >
+          <Button type="primary" icon={<ReloadOutlined />} onClick={handleRetry}>
             Tải lại
           </Button>
         </Empty>

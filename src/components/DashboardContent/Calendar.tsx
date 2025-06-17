@@ -1,33 +1,25 @@
 import React, { useState } from "react";
 import dayjs from "dayjs";
 import "dayjs/locale/zh-cn";
-import { Calendar, Col, Row, Select, theme, Typography } from "antd";
+import { Calendar, Card, Typography } from "antd";
 import type { CalendarProps } from "antd";
 import type { Dayjs } from "dayjs";
 import dayLocaleData from "dayjs/plugin/localeData";
+import updateLocale from "dayjs/plugin/updateLocale";
 
 dayjs.extend(dayLocaleData);
+dayjs.extend(updateLocale);
 
-interface OverviewCalendarProps {
-  defaultDate?: Date;
-}
+dayjs.updateLocale("en", {
+  weekStart: 1,
+  weekdaysShort: ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
+});
 
-const OverviewCalendar: React.FC<OverviewCalendarProps> = ({ defaultDate }) => {
-  const { token } = theme.useToken();
+const OverviewCalendar: React.FC = () => {
   const today = dayjs();
+  const [value, setValue] = useState<Dayjs>(today);
 
-  const [value, setValue] = useState<Dayjs>(
-    defaultDate ? dayjs(defaultDate) : today
-  );
-
-  const wrapperStyle: React.CSSProperties = {
-    width: "100%",
-    marginTop: "16px",
-    borderRadius: token.borderRadiusLG,
-    background: "#fff",
-  };
-
-  const onPanelChange = (value: Dayjs, mode: CalendarProps<Dayjs>["mode"]) => {
+  const onPanelChange = (value: Dayjs) => {
     setValue(value);
   };
 
@@ -38,7 +30,19 @@ const OverviewCalendar: React.FC<OverviewCalendarProps> = ({ defaultDate }) => {
   const dateCellRender = (date: Dayjs) => {
     const isToday = date.format("YYYY-MM-DD") === today.format("YYYY-MM-DD");
     const isSelected = date.format("YYYY-MM-DD") === value.format("YYYY-MM-DD");
-
+    const isCurrentMonth = date.month() === value.month();
+    let bg = "transparent";
+    let color = "#333";
+    let border = undefined;
+    if (!isCurrentMonth) {
+      color = "#E4E4E4";
+    } else if (isSelected) {
+      bg = "#FF7506";
+      color = "#fff";
+    } else if (isToday) {
+      border = "1.5px solid #FF7506";
+      color = "#FF7506";
+    }
     return (
       <div
         style={{
@@ -51,24 +55,22 @@ const OverviewCalendar: React.FC<OverviewCalendarProps> = ({ defaultDate }) => {
         <div
           style={{
             display: "inline-block",
-            width: "24px",
-            height: "24px",
-            lineHeight: "24px",
+            width: "32px",
+            height: "32px",
+            lineHeight: "32px",
             textAlign: "center",
             borderRadius: "8px",
-            ...(isToday
-              ? {
-                  backgroundColor: "#FF7506",
-                  color: "white",
-                }
-              : isSelected
-              ? {
-                  backgroundColor: "#FFF2E7",
-                  color: "#FF7506",
-                  border: "1px solid #FF7506",
-                }
-              : {}),
+            fontWeight: isSelected ? 700 : 400,
+            fontSize: "16px",
+            color,
+            backgroundColor: bg,
+            border,
+            cursor: isCurrentMonth ? "pointer" : "default",
+            transition: "all 0.2s",
           }}
+          className={
+            isCurrentMonth && !isSelected ? "calendar-day-hoverable" : undefined
+          }
         >
           {date.date()}
         </div>
@@ -80,139 +82,66 @@ const OverviewCalendar: React.FC<OverviewCalendarProps> = ({ defaultDate }) => {
     value,
     onChange,
   }) => {
-    const start = 0;
-    const end = 12;
-    const monthOptions = [];
-
-    let current = value.clone();
-    const localeData = value.localeData();
-    const months = [];
-    for (let i = 0; i < 12; i++) {
-      current = current.month(i);
-      months.push(localeData.monthsShort(current));
-    }
-
-    for (let i = start; i < end; i++) {
-      monthOptions.push(
-        <Select.Option key={i} value={i} className="month-item">
-          {months[i]}
-        </Select.Option>
-      );
-    }
-
-    const year = value.year();
-    const month = value.month();
-    const yearOptions = [];
-    for (let i = year - 10; i < year + 10; i += 1) {
-      yearOptions.push(
-        <Select.Option key={i} value={i} className="year-item">
-          {i}
-        </Select.Option>
-      );
-    }
-
-    // Navigation functions
     const goToPreviousMonth = () => {
       const newDate = value.clone().subtract(1, "month");
       onChange(newDate);
     };
-
     const goToNextMonth = () => {
       const newDate = value.clone().add(1, "month");
       onChange(newDate);
     };
-
     return (
       <div
         style={{
-          padding: "10px 16px",
+          padding: "10px 0 20px 0",
           display: "flex",
-          justifyContent: "space-between",
+          justifyContent: "center",
           alignItems: "center",
+          gap: 24,
         }}
       >
-        <div
+        <button
+          onClick={goToPreviousMonth}
           style={{
-            display: "flex",
-            alignItems: "center",
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            color: "#FF7506",
+            fontSize: "20px",
+            fontWeight: 700,
+            padding: "0 16px",
           }}
+          aria-label="Previous month"
         >
-          <Row gutter={8}>
-            <Col>
-              <Select
-                size="small"
-                popupMatchSelectWidth={false}
-                className="my-year-select"
-                value={year}
-                onChange={(newYear) => {
-                  const newDate = value.clone().year(newYear);
-                  onChange(newDate);
-                }}
-                style={{ width: 70 }}
-              >
-                {yearOptions}
-              </Select>
-            </Col>
-            <Col>
-              <Select
-                size="small"
-                popupMatchSelectWidth={false}
-                value={month}
-                onChange={(newMonth) => {
-                  const newDate = value.clone().month(newMonth);
-                  onChange(newDate);
-                }}
-                style={{ width: 70 }}
-              >
-                {monthOptions}
-              </Select>
-            </Col>
-          </Row>
-        </div>
-
-        <div
+          &lt;
+        </button>
+        <Typography.Text strong style={{ color: "#FF7506", fontSize: 20 }}>
+          {value.format("DD MMM YYYY")}
+        </Typography.Text>
+        <button
+          onClick={goToNextMonth}
           style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            color: "#FF7506",
+            fontSize: "20px",
+            fontWeight: 700,
+            padding: "0 16px",
           }}
+          aria-label="Next month"
         >
-          <button
-            onClick={goToPreviousMonth}
-            style={{
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              color: "#FF7506",
-              fontSize: "16px",
-            }}
-          >
-            &lt;
-          </button>
-
-          <Typography.Text strong style={{ color: "#FF7506" }}>
-            {value.format("DD MMM YYYY")}
-          </Typography.Text>
-
-          <button
-            onClick={goToNextMonth}
-            style={{
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              color: "#FF7506",
-              fontSize: "16px",
-            }}
-          >
-            &gt;
-          </button>
-        </div>
+          &gt;
+        </button>
       </div>
     );
   };
 
   return (
-    <div style={wrapperStyle}>
+    <Card
+      size="small"
+      style={{ borderRadius: "12px", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}
+    >
       <Calendar
         value={value}
         fullscreen={false}
@@ -220,12 +149,30 @@ const OverviewCalendar: React.FC<OverviewCalendarProps> = ({ defaultDate }) => {
         onSelect={onSelect}
         onPanelChange={onPanelChange}
         fullCellRender={dateCellRender}
-        style={{
-          backgroundColor: "#fff",
-          borderRadius: token.borderRadiusLG,
-        }}
+        style={{ border: "none" }}
+        className="custom-calendar"
       />
-    </div>
+      <style>{`
+        .custom-calendar .ant-picker-calendar-header {
+          display: none;
+        }
+        .custom-calendar .ant-picker-calendar-date-content {
+          display: none;
+        }
+        .custom-calendar .ant-picker-calendar-date {
+          padding: 0 !important;
+        }
+        .custom-calendar .ant-picker-calendar-week-panel th {
+          color: #FF7506;
+          font-weight: 700;
+          font-size: 16px;
+        }
+        .calendar-day-hoverable:hover {
+          background: #FFF2E7 !important;
+          color: #FF7506 !important;
+        }
+      `}</style>
+    </Card>
   );
 };
 
