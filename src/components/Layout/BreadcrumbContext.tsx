@@ -12,6 +12,8 @@ interface BreadcrumbContextType {
   addBreadcrumb: (item: BreadcrumbItem) => void;
   removeBreadcrumb: (index: number) => void;
   clearBreadcrumbs: () => void;
+  title: string;
+  setTitle: (newTitle: string) => void;
 }
 
 const BreadcrumbContext = createContext<BreadcrumbContextType | undefined>(undefined);
@@ -30,6 +32,7 @@ interface BreadcrumbProviderProps {
 
 export const BreadcrumbProvider: React.FC<BreadcrumbProviderProps> = ({ children }) => {
   const [breadcrumbs, setBreadcrumbs] = useState<BreadcrumbItem[]>([]);
+  const [title, setTitle] = useState<string>("Dashboard");
 
   const addBreadcrumb = (item: BreadcrumbItem) => {
     setBreadcrumbs(prev => [...prev, item]);
@@ -49,6 +52,8 @@ export const BreadcrumbProvider: React.FC<BreadcrumbProviderProps> = ({ children
     addBreadcrumb,
     removeBreadcrumb,
     clearBreadcrumbs,
+    title,
+    setTitle,
   };
 
   return (

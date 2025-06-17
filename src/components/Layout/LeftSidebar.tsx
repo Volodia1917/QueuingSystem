@@ -47,9 +47,27 @@ const LeftSidebar = (props: {
           stroke={selectedKey === MENU_KEYS.DASHBOARD ? "#fff" : "#A9A9B0"}
         />
       ),
-      getItem("Thiết bị", MENU_KEYS.DEVICE, <LeftSidebarIcons.Monitor />),
-      getItem("Dịch vụ", MENU_KEYS.SERVICE, <LeftSidebarIcons.Service />),
-      getItem("Cấp số", MENU_KEYS.CAP_SO, <LeftSidebarIcons.TicketProvider />),
+      getItem(
+        "Thiết bị",
+        MENU_KEYS.DEVICE,
+        <LeftSidebarIcons.Monitor
+          stroke={selectedKey === MENU_KEYS.DEVICE ? "#fff" : "#A9A9B0"}
+        />
+      ),
+      getItem(
+        "Dịch vụ",
+        MENU_KEYS.SERVICE,
+        <LeftSidebarIcons.Service
+          stroke={selectedKey === MENU_KEYS.SERVICE ? "#fff" : "#A9A9B0"}
+        />
+      ),
+      getItem(
+        "Cấp số",
+        MENU_KEYS.CAP_SO,
+        <LeftSidebarIcons.TicketProvider
+          stroke={selectedKey === MENU_KEYS.CAP_SO ? "#fff" : "#A9A9B0"}
+        />
+      ),
       getItem(
         "Cài đặt hệ thống",
         MENU_KEYS.SYSTEM_SETTINGS,
@@ -87,6 +105,8 @@ const LeftSidebar = (props: {
   };
 
   const onSelect: MenuProps["onSelect"] = ({ key }) => {
+    console.log("Đang chọn mục: ",key as MenuKey);
+  
     setSelectedKey(key as MenuKey);
     props.sendSelectedIndex(key as MenuKey);
   };
@@ -107,12 +127,11 @@ const LeftSidebar = (props: {
 
   return (
     <Layout style={{ height: "100vh" }}>
-      <BreadcrumbProvider>
         <Sider
           trigger={null}
           collapsible
           style={{ background: "#fff" }}
-          width={200}
+          // width={200}
         >
           <div className="logo" style={{ padding: "36px", textAlign: "center" }}>
             <Image
@@ -168,6 +187,7 @@ const LeftSidebar = (props: {
             </Button>
           </div>
         </Sider>
+
         <Layout>
           {props.header ? (
             <Header style={{ padding: "0 24px", background: "#F6F6F6" }}>
@@ -176,7 +196,6 @@ const LeftSidebar = (props: {
           ) : null}
           <Content>{props.content}</Content>
         </Layout>
-      </BreadcrumbProvider>
     </Layout>
   );
 };

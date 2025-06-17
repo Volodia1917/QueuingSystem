@@ -14,6 +14,7 @@ export const getLogin = async (url: string, userName: string, password: string) 
 
         if (!response.ok) {
             const error = await response.text();
+            
             throw new Error(error);
         }
 

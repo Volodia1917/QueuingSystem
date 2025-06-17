@@ -53,7 +53,7 @@ const CapSoList: React.FC = () => {
     //   content={
         <div className={styles.container}>
           <div className={styles.topbar}>
-            <Topbar />
+            {/* <Topbar /> */}
           </div>
 
           <div className={styles.contentWrapper}>

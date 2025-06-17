@@ -61,7 +61,7 @@
   gap: 16px;
 }
 
-:global(.ant-btn) {
+/* :global(.ant-btn) {
   min-width: 100px;
   height: 40px;
   border-radius: 8px;
@@ -77,7 +77,7 @@
 :global(.ant-btn-primary:focus) {
   background-color: #e47f27;
   border-color: #e47f27;
-}
+} */
 
 .canel {
   background-color: #fff2e7;

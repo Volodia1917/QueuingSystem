@@ -1,0 +1,11 @@
+.user_avatar{
+    padding: 0 !important;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50%;
+    border: 1.5px solid #FF7A00;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}

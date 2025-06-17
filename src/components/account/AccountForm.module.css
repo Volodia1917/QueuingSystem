@@ -1,0 +1,26 @@
+.form_container{
+    width: 100%;
+    padding: 16px 24px
+}
+
+
+.form{
+    width: 100%;
+}
+
+.form_content{
+    width: 100%;
+    background-color: #fff;
+    padding: 16px 24px;
+    border-radius: 16px;
+}
+
+.form_item{
+    flex: 50%;
+}
+
+.form_input {
+    padding: 8px 12px;
+    line-height: 27px;
+    max-height: 44px;
+}

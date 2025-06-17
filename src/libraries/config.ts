@@ -7,7 +7,9 @@ export const MENU_KEYS = {
   ROLE_MANAGEMENT: "role-management",
   ACCOUNT_MANAGEMENT: "account-management",
   USER_LOG: "user-log",
+  USER_INFO: "user_info"
 } as const;
+
 export type MenuKey = (typeof MENU_KEYS)[keyof typeof MENU_KEYS];
 
 export const config = {

@@ -29,7 +29,7 @@ const TableCustom = ({
   style,
 }: TableCustomProps) => {
   return (
-    <div>
+    <div style={{width: "100%"}}>
       <Table
         className="custom-table"
         columns={columns}
