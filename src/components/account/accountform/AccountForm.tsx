@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 import styles from "./AccountForm.module.css";
 import { Form, Input, FormProps, Button, Layout, Flex, Row, Col, Select, ConfigProvider } from "antd";
-import { updateUser } from "../../libraries/updateUser";
-import { addUser } from "../../libraries/addUser";
-import PageTitle from "../PageTitle/PageTitle";
-import FormTheme from "../Form/FormTheme";
-import { Account } from "../types/Account.type";
-import { UserAccount } from "../types/UserAccount.type";
+import { updateUser } from "../../../libraries/updateUser";
+import { addUser } from "../../../libraries/addUser";
+import PageTitle from "../../PageTitle/PageTitle";
+import FormTheme from "../../Form/FormTheme";
+import { Account } from "../../types/Account.type";
+import { UserAccount } from "../../types/UserAccount.type";
 
 const { Option } = Select;
 

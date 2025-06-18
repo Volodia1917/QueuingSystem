@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useBreadcrumb } from "../Layout/BreadcrumbContext";
-import AccountList from "../../pages/account/AccountList.view";
-import AccountForm from "./AccountForm";
-import { Account } from "../types/Account.type";
+import { useBreadcrumb } from "../../Layout/BreadcrumbContext";
+import AccountList from "../../../pages/account/AccountList.view";
+import AccountForm from "../accountform/AccountForm";
+import { Account } from "../../types/Account.type";
 
 type AccountKey = "userManagement" | "userAdd" | "userUpdate";
 

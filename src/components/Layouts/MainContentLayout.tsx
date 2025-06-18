@@ -11,7 +11,7 @@ import ServicePage from "../../pages/service";
 import CapSoList from "../../pages/capso/CapSoList.view";
 // import AccountList from "../../pages/account/AccountList.view";
 // import AccountList from "../AccountList/AccountList.content";
-import AccountListContent from "../Account/AccountList.content";
+import AccountListContent from "../account/accountlist/AccountList.content";
 
 interface MainContentLayoutProps {
   selectedMenu: MenuKey;

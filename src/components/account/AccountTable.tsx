@@ -10,7 +10,7 @@ interface AccountTableProps {
 }
 
 const AccountTable: React.FC<AccountTableProps> = (props) => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<Account[]>([]);
   const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState<PaginationConfig>({
     current: 1,
@@ -19,41 +19,58 @@ const AccountTable: React.FC<AccountTableProps> = (props) => {
   });
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      const fetch_data = await getUser();
-      setData(fetch_data);
-      setLoading(false);
-    };
+  const fetchData = async () => {
+    setLoading(true);
+    const fetch_data = await getUser();
+    console.log("Kết quả từ getUser:", fetch_data);
 
-    fetchData();
-  }, []);
+    // ✅ Luôn đảm bảo `data` là mảng
+    if (Array.isArray(fetch_data)) {
+      setData(fetch_data); // Trường hợp OK
+    } else if (fetch_data && Array.isArray(fetch_data.$values)) {
+      setData(fetch_data.$values); // Nếu dữ liệu nằm trong fetch_data.data
+    } else {
+      console.warn("⚠️ Dữ liệu getUser không hợp lệ. Đặt về mảng rỗng.");
+      setData([]); // Fallback để không gây lỗi
+    }
+
+    setLoading(false);
+  };
+
+  fetchData();
+}, []);
+
 
   const columns = [
     {
       title: "Tên đăng nhập",
       dataIndex: "email",
       key: "email",
+      align: "left",
     },
     {
       title: "Họ tên",
       dataIndex: "fullName",
       key: "fullName",
+      align: "left",
     },
     {
       title: "Số điện thoại",
       dataIndex: "telephone",
       key: "telephone",
+      align: "left",
     },
     {
       title: "Vai trò",
       dataIndex: "userRole",
       key: "userRole",
+      align: "left",
     },
     {
       title: "Trạng thái hoạt động",
       dataIndex: "status",
       key: "status",
+      align: "left",
       render: (status: string) => (
         <span style={{ color: status === "Hoạt động" ? "green" : "red" }}>
           ● {status}
