@@ -117,7 +117,9 @@ const OverviewItems = () => {
       const response: OverallSummaryResponse =
         await getStatisticOverallSummary();
 
-      const fields = Object.keys(response).filter((key) => !key.startsWith("$"));
+      const fields = Object.keys(response).filter(
+        (key) => !key.startsWith("$")
+      );
 
       const sortedFields = sortFieldsByOrder(fields);
 

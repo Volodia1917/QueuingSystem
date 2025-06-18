@@ -6,11 +6,19 @@ import FilterPanel from "../../components/capso/FilterPanel/FilterPanel.view";
 import CapSoTable from "../../components/capso/CapSoTable/CapSoTable.view";
 import FloatingActionButton from "../../components/capso/FloatingActionBtn/FloatingActionBtn.view";
 import CapSoDetail from "../../components/capso/CapSoDetail/CapSoDetail.view";
-import NewNumberForm from "../../components/capso/NewNumberForm/NewNumberForm.view"
-import { assignmentApi, serviceApi, AdminFilterAssignment, GenerateAssignmentResponse, AdminFilterRequest, Service } from "../../libraries/assignmentApi";
+import NewNumberForm from "../../components/capso/NewNumberForm/NewNumberForm.view";
+import {
+  assignmentApi,
+  serviceApi,
+  AdminFilterAssignment,
+  GenerateAssignmentResponse,
+  AdminFilterRequest,
+  Service,
+} from "../../libraries/assignmentApi";
 
 const CapSoList: React.FC = () => {
-  const [selectedCapSo, setSelectedCapSo] = useState<AdminFilterAssignment | null>(null);
+  const [selectedCapSo, setSelectedCapSo] =
+    useState<AdminFilterAssignment | null>(null);
   const [selectedService, setSelectedService] = useState(false); // state mới
   const [capSoList, setCapSoList] = useState<AdminFilterAssignment[]>([]);
   const [services, setServices] = useState<Service[]>([]);
@@ -41,7 +49,7 @@ const CapSoList: React.FC = () => {
         const response = await assignmentApi.adminFilter({
           page: currentPage,
           pageSize: pageSize,
-          ...filters
+          ...filters,
         });
         setCapSoList(response.items);
         setTotalItems(response.totalItems);
@@ -73,7 +81,7 @@ const CapSoList: React.FC = () => {
         const response = await assignmentApi.adminFilter({
           page: currentPage,
           pageSize: pageSize,
-          ...filters
+          ...filters,
         });
         setCapSoList(response.items);
         setTotalItems(response.totalItems);
@@ -84,11 +92,8 @@ const CapSoList: React.FC = () => {
     fetchCapSoList();
   };
 
-
-
   return (
     <div className={styles.container}>
-
       <div className={styles.contentWrapper}>
         <div className={styles.pageHeader}>
           <PageTitle title="Quản lý cấp số" />
@@ -98,33 +103,39 @@ const CapSoList: React.FC = () => {
           <CapSoDetail
             capSo={selectedCapSo}
             onBack={() => setSelectedCapSo(null)}
-          />) : selectedService ? (
-            <NewNumberForm
-              onCancel={() => setSelectedService(false)}
-              onSubmit={handleAddNewCapSo}
-            />
-          ) : (
-          <>            <div className={styles.mainContent}>
-            <div className={styles.filterpanel}>
-              <FilterPanel
-                onFilterChange={handleFilterChange}
-                services={services}
-              />
-            </div>            <div className={styles.tableWithButton}>
-              <CapSoTable
-                data={capSoList}
-                loading={loading}
-                onSelectDetail={(capSo) => setSelectedCapSo(capSo)}
-                currentPage={currentPage}
-                totalItems={totalItems}
-                pageSize={pageSize}
-                onPageChange={handlePageChange}
-              />
-              <div className={styles.floatingButton}>
-                <FloatingActionButton onClick={() => setSelectedService(true)} />
+          />
+        ) : selectedService ? (
+          <NewNumberForm
+            onCancel={() => setSelectedService(false)}
+            onSubmit={handleAddNewCapSo}
+          />
+        ) : (
+          <>
+            {" "}
+            <div className={styles.mainContent}>
+              <div className={styles.filterpanel}>
+                <FilterPanel
+                  onFilterChange={handleFilterChange}
+                  services={services}
+                />
+              </div>{" "}
+              <div className={styles.tableWithButton}>
+                <CapSoTable
+                  data={capSoList}
+                  loading={loading}
+                  onSelectDetail={(capSo) => setSelectedCapSo(capSo)}
+                  currentPage={currentPage}
+                  totalItems={totalItems}
+                  pageSize={pageSize}
+                  onPageChange={handlePageChange}
+                />
+                <div className={styles.floatingButton}>
+                  <FloatingActionButton
+                    onClick={() => setSelectedService(true)}
+                  />
+                </div>
               </div>
             </div>
-          </div>
           </>
         )}
       </div>

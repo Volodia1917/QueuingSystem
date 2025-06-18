@@ -1,0 +1,31 @@
+.logo {
+    justify-content: center;
+    padding: 32px;
+}
+
+.btn_wrapper{
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    padding: 0 16px;
+}
+
+.btn_logout{
+    width: 100%;
+    text-align: left;
+    background-color: #FFF2E7;
+    color: #FF7506;
+    border-radius: 8px;
+    height: 40px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.btn_logout:hover{
+    color: red;
+}
+
+.ant-menu-submenu.ant-menu-submenu-inline.ant-menu-submenu-open.ant-menu-submenu-active .ant-menu-submenu-title:active{
+    color: #000 !important;
+}

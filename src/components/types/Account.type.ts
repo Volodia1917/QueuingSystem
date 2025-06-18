@@ -1,10 +1,9 @@
 export interface Account {
   id: string;
-  username: string;
-  fullName: string;
-  phone: string;
   email: string;
-  role: string;
+  fullName: string;
+  telephone: string;
+  userRole: string;
   status: string;
 
   password?: string; // thêm nếu cần dùng

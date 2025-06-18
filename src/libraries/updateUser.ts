@@ -1,45 +1,44 @@
 import { API_URL, getToken } from "./useApi";
+import { UserAccount } from "../components/types/UserAccount.type";
 
-export const updateUser = async (email: string, formValues: Record<string, any>) => {
-
-    const token = getToken();
-    if (!token) throw new Error("Token không tồn tại");
-
+export const updateUser = async (email: string, values: UserAccount) => {
     const formData = new FormData();
 
-    // Duyệt qua các key trong formValues và append nếu có
-    Object.entries(formValues).forEach(([key, value]) => {
-        if (
-            key !== "Email" && // bỏ qua email
-            value !== undefined &&
-            value !== null &&
-            value !== ""
-        ) {
-            formData.append(key, value);
+    (
+        Object.keys(values) as (keyof UserAccount)[]
+    ).forEach((key) => {
+        const value = values[key];
+        if (value !== undefined && value !== null && typeof value !== "object") {
+            formData.append(key, value.toString());
         }
-    });
+      });
 
-    try {
-        const response = await fetch(`${API_URL}/User/${email}`, {
-            method: "PUT",
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-            body: formData,
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            console.log("Cập nhật thành công:", data);
-        } else {
-            console.error("Lỗi cập nhật:", data.message);
-        }
-
-        return data;
-        
-    } catch (err) {
-        console.error("Lỗi kết nối:", err);
+    if (values.Avatar instanceof File) {
+        formData.append("Avatar", values.Avatar);
     }
 
+    formData.forEach((value, key) => {
+        console.log("formData:", key, value);
+      });
+
+    const response = await fetch(`${API_URL}/User/${email}`, {
+        method: "PUT",
+        headers: {
+            Authorization: `Bearer ${getToken()}`,
+        },
+        body: formData,
+    });
+
+    const contentType = response.headers.get("content-type");
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText);
+    }
+
+    if (contentType && contentType.includes("application/json")) {
+        return response.json();
+    } else {
+        return response.text(); // fallback nếu không phải JSON
+    }
 };
