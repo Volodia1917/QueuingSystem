@@ -12,7 +12,7 @@
   background: #ff9138 !important;
   color: white !important;
   font-weight: 600 !important;
-  text-align: center !important;
+  text-align: center ;
   border-bottom: none !important;
   padding: 16px 12px !important;
   font-size: 16px !important;
@@ -36,4 +36,10 @@
 
 .custom-table .ant-table-tbody > tr:hover > td {
   background: #f8f9fa !important;
+}
+
+.pagination {
+  text-align: right;
+  justify-content: flex-end;
+  padding: 16px 0; /* Tùy chỉnh khoảng cách trên/dưới */
 }

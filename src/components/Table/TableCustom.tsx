@@ -39,14 +39,14 @@ const TableCustom = ({
         size={size}
         style={style}
       />
-      <Pagination
-        align={pagination?.align}
-        style={pagination?.style}
-        current={pagination?.current}
-        total={pagination?.total}
-        pageSize={pagination?.pageSize}
-        onChange={pagination?.onChange}
-      />
+      <div className="pagination">
+        <Pagination
+          current={pagination?.current}
+          total={pagination?.total}
+          pageSize={pagination?.pageSize}
+          onChange={pagination?.onChange}
+        />
+      </div>
     </div>
   );
 };

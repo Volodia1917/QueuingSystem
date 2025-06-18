@@ -11,7 +11,7 @@ import ServicePage from "../../pages/service";
 import CapSoList from "../../pages/capso/CapSoList.view";
 // import AccountList from "../../pages/account/AccountList.view";
 // import AccountList from "../AccountList/AccountList.content";
-import AccountListContent from "../Account/AccountList.content";
+import AccountListContent from "../account/accountlist/AccountList.content";
 
 interface MainContentLayoutProps {
   selectedMenu: MenuKey;
@@ -46,9 +46,10 @@ const MainContentLayout: React.FC<MainContentLayoutProps> = (props) => {
 
   return (
     <>
-      <Row className={styles.topbar_wrapper}>
-        <TopBar />
-      </Row>
+      {props.selectedMenu !== MENU_KEYS.DASHBOARD && (
+
+        <Row className={styles.topbar_wrapper}><TopBar /></Row> 
+      )}
 
       <Row className={styles.content_wrapper}>{renderContent()}</Row>
     </>

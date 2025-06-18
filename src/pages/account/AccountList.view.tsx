@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import AccountFilterPanel from "../../components/Account/AccountFilterPanel/AccountFilterPanel.view";
-import AccountFloatingActionButton from "../../components/Account/AccountFloatingActionBtn.view";
+import AccountFilterPanel from "../../components/account/AccountFilterPanel/AccountFilterPanel.view";
+import AccountFloatingActionButton from "../../components/account/accountfloating/AccountFloatingActionBtn.view";
 import type { Account } from "../../components/types/Account.type";
 import { useBreadcrumb } from "../../components/Layout/BreadcrumbContext";
 import ContentLayout from "../../components/Layouts/ContentLayout";
-import AccountTable from "../../components/Account/AccountTable";
+import AccountTable from "../../components/account/AccountTable";
 
 interface AccountListProps {
   onClickAddAccount: () => void;
