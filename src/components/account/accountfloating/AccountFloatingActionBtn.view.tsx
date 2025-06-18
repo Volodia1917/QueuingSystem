@@ -1,6 +1,6 @@
 import React from "react";
 import { PlusOutlined } from "@ant-design/icons";
-import styles from "../capso/FloatingActionBtn/FloatingActionBtn.module.css";
+import styles from "./AccountFloatingActionBtn.module.css";
 
 interface Props {
   onClick?: () => void;  // thêm prop onClick tùy chọn

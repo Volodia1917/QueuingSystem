@@ -46,9 +46,10 @@ const MainContentLayout: React.FC<MainContentLayoutProps> = (props) => {
 
   return (
     <>
-      <Row className={styles.topbar_wrapper}>
-        <TopBar />
-      </Row>
+      {props.selectedMenu !== MENU_KEYS.DASHBOARD && (
+
+        <Row className={styles.topbar_wrapper}><TopBar /></Row> 
+      )}
 
       <Row className={styles.content_wrapper}>{renderContent()}</Row>
     </>

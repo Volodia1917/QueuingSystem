@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import AccountFilterPanel from "../../components/account/AccountFilterPanel/AccountFilterPanel.view";
-import AccountFloatingActionButton from "../../components/account/AccountFloatingActionBtn.view";
+import AccountFloatingActionButton from "../../components/account/accountfloating/AccountFloatingActionBtn.view";
 import type { Account } from "../../components/types/Account.type";
 import { useBreadcrumb } from "../../components/Layout/BreadcrumbContext";
 import ContentLayout from "../../components/Layouts/ContentLayout";
